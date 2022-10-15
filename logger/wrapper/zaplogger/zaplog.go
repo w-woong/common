@@ -108,7 +108,7 @@ func NewLogger(level core.Level, stdOut bool, fileName string, roller core.Rolle
 		}
 	}
 
-	_globallogger, err := config.Build(zap.AddCallerSkip(1))
+	_globallogger, err := config.Build(zap.AddCallerSkip(2))
 	if err != nil {
 		panic(err)
 	}
