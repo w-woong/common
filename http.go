@@ -1,10 +1,16 @@
 package common
 
 import (
+	"io"
 	"net/http"
 
 	"github.com/go-wonk/si"
 )
+
+func HttpOK(w http.ResponseWriter) error {
+	w.WriteHeader(http.StatusOK)
+	return si.EncodeJson(w, &HttpBodyOK)
+}
 
 func HttpError(w http.ResponseWriter, status int) {
 	HttpErrorWithMessage(w, http.StatusText(status), status)
@@ -18,6 +24,8 @@ func HttpErrorWithMessage(w http.ResponseWriter, message string, status int) {
 	si.EncodeJson(w, NewHttpBody(message, status))
 }
 
+var HttpBodyOK = HttpBody{Status: http.StatusOK}
+
 type HttpBody struct {
 	Status    int         `json:"status,omitempty"`
 	Message   string      `json:"message,omitempty"`
@@ -26,11 +34,13 @@ type HttpBody struct {
 	Documents interface{} `json:"documents,omitempty"`
 }
 
-var HttpBodyOK = HttpBody{Status: http.StatusOK}
-
 func NewHttpBody(message string, status int) *HttpBody {
 	return &HttpBody{
 		Status:  status,
 		Message: message,
 	}
+}
+
+func (m *HttpBody) EncodeTo(w io.Writer) error {
+	return si.EncodeJson(w, m)
 }

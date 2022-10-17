@@ -1,0 +1,12 @@
+name: "wonk"
+age: 100
+
+http:
+  context:
+    timeout: 6
+    value:
+      - 'a'
+      - 'b'
+  header:
+    auth:
+      token: "asdf"

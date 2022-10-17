@@ -24,3 +24,4 @@ logs/
 *.log.gz
 
 bin/
+.vscode/
