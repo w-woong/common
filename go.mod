@@ -3,7 +3,6 @@ module github.com/w-woong/common
 go 1.18
 
 require (
-	git.daiso.co.kr/daisoprivate/commons v1.2.8
 	github.com/go-wonk/si v0.2.6
 	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/natefinch/lumberjack v2.0.0+incompatible
@@ -35,6 +34,7 @@ require (
 	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
+	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
