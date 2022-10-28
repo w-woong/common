@@ -24,7 +24,7 @@ func AuthHMACHandler(next http.HandlerFunc, hmacHeader string, hmacKey []byte) h
 		if r.Body != nil {
 			reqBytes, err = si.ReadAll(r.Body)
 			if err != nil {
-				http.Error(w, "Bad Request", http.StatusBadRequest)
+				HttpError(w, http.StatusBadRequest)
 				logger.Error(http.StatusText(http.StatusBadRequest), logger.UrlField(r.URL.String()))
 				return
 			}
@@ -39,13 +39,13 @@ func AuthHMACHandler(next http.HandlerFunc, hmacHeader string, hmacKey []byte) h
 
 		hmacHexStr, err := sicore.HmacSha256HexEncoded(string(hmacKey), msg)
 		if err != nil {
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			HttpError(w, http.StatusInternalServerError)
 			logger.Error(http.StatusText(http.StatusInternalServerError), logger.UrlField(r.URL.String()))
 			return
 		}
 
 		if hmacHexStr != r.Header.Get(hmacHeader) {
-			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+			HttpError(w, http.StatusUnauthorized)
 			logger.Warn(fmt.Sprintf("generated hmac value %v is invalid(expected: %v)", r.Header.Get(hmacHeader), hmacHexStr),
 				logger.UrlField(r.URL.String()), logger.ReqBodyField(reqBytes))
 			return
@@ -59,14 +59,14 @@ func AuthBearerHandler(next http.HandlerFunc, bearerKey string) http.HandlerFunc
 	return func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
 		if authHeader == "" {
-			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+			HttpError(w, http.StatusUnauthorized)
 			logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
 			return
 		}
 
 		authVal := strings.Split(authHeader, " ")
 		if len(authVal) != 2 {
-			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+			HttpError(w, http.StatusUnauthorized)
 			logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
 			return
 		}
@@ -111,13 +111,13 @@ func handleJWTAuth(w http.ResponseWriter, r *http.Request, secretKey string) err
 
 	authHeader := r.Header.Get("Authorization")
 	if authHeader == "" {
-		http.Error(w, "Not Authorized", http.StatusUnauthorized)
+		HttpError(w, http.StatusUnauthorized)
 		logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
 		return errors.New("not authorized")
 	}
 	authHeaderSplit := strings.Split(authHeader, " ")
 	if len(authHeaderSplit) != 2 {
-		http.Error(w, "Not Authorized", http.StatusUnauthorized)
+		HttpError(w, http.StatusUnauthorized)
 		logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
 		return errors.New("not authorized")
 	}
