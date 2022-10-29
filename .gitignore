@@ -18,6 +18,7 @@
 
 # debug files
 debug
+__debug_bin
 
 logs/
 *.log
