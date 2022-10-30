@@ -19,7 +19,7 @@ func NewGormTxBeginner(db *gorm.DB) *GormTxBeginner {
 	}
 }
 
-// Begin starts transaction returning port.TxController that commits or rollbacks
+// Begin starts transaction returning common.TxController that commits or rollbacks
 func (a *GormTxBeginner) Begin() (common.TxController, error) {
 	tx := a.db.Begin()
 	if tx.Error != nil {
