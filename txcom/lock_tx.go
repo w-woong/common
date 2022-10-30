@@ -27,41 +27,61 @@ func (a *LockTxBeginner) BeginR() (common.TxController, error) {
 }
 
 type LockTxController struct {
-	l *sync.RWMutex
+	unlocked bool
+	l        *sync.RWMutex
 }
 
 func NewLockTxController(l *sync.RWMutex) *LockTxController {
 	return &LockTxController{
-		l: l,
+		unlocked: false,
+		l:        l,
 	}
 }
 
 func (a *LockTxController) Commit() error {
+	if a.unlocked {
+		return nil
+	}
+	a.unlocked = true
 	a.l.Unlock()
 	return nil
 }
 
 func (a *LockTxController) Rollback() error {
+	if a.unlocked {
+		return nil
+	}
+	a.unlocked = true
 	a.l.Unlock()
 	return nil
 }
 
 type RLockTxController struct {
-	l *sync.RWMutex
+	unlocked bool
+	l        *sync.RWMutex
 }
 
 func NewRLockTxController(l *sync.RWMutex) *RLockTxController {
 	return &RLockTxController{
-		l: l,
+		unlocked: false,
+		l:        l,
 	}
 }
 
 func (a *RLockTxController) Commit() error {
+	if a.unlocked {
+		return nil
+	}
+	a.unlocked = true
 	a.l.RUnlock()
 	return nil
 }
 
 func (a *RLockTxController) Rollback() error {
+	if a.unlocked {
+		return nil
+	}
+	a.unlocked = true
 	a.l.RUnlock()
 	return nil
 }
