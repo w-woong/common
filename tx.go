@@ -6,6 +6,11 @@ type TxBeginner interface {
 	Begin() (TxController, error)
 }
 
+type RWTxBeginner interface {
+	Begin() (TxController, error)
+	BeginR() (TxController, error)
+}
+
 type TxController interface {
 	Commit() error
 	Rollback() error
