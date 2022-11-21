@@ -25,6 +25,7 @@ func HttpErrorWithMessage(w http.ResponseWriter, message string, status int) {
 }
 
 var HttpBodyOK = HttpBody{Status: http.StatusOK}
+var HttpBodyRecordNotFound = HttpBody{Count: 0, Status: http.StatusOK, Message: ErrRecordNotFound.Error()}
 
 type HttpBody struct {
 	Status    int         `json:"status,omitempty"`
