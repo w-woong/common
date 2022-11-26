@@ -16,6 +16,7 @@ func (c *Config) String() string {
 type ConfigServer struct {
 	Http ConfigHttp `mapstructure:"http"`
 	Repo ConfigRepo `mapstructure:"repo"`
+	Grpc ConfigGrpc `mapstructure:"grpc"`
 }
 
 type ConfigHttp struct {
@@ -44,6 +45,28 @@ type ConfigRepo struct {
 	ConnMaxLifetimeMinutes int    `mapstructure:"conn_max_lifetime_in_min"`
 }
 
+type ConfigGrpc struct {
+	Timeout           int                     `mapstructure:"timeout"`
+	HealthCheck       bool                    `mapstructure:"healthcheck"`
+	EnforcementPolicy ConfigEnforcementPolicy `mapstructure:"enforcement_policy"`
+	KeepAlive         ConfigKeepAlive         `mapstructure:"keep_alive"`
+}
+
+type ConfigEnforcementPolicy struct {
+	Use                 bool `mapstructure:"use"`
+	MinTime             int  `mapstructure:"min_time"`
+	PermitWithoutStream bool `mapstructure:"permit_without_stream"`
+}
+
+type ConfigKeepAlive struct {
+	MaxConnIdle         int  `mapstructure:"max_conn_idle"`
+	MaxConnAge          int  `mapstructure:"max_conn_age"`
+	MaxConnAgeGrace     int  `mapstructure:"max_conn_age_grace"`
+	Time                int  `mapstructure:"time"`
+	Timeout             int  `mapstructure:"timeout"`
+	PermitWithoutStream bool `mapstructure:"permit_without_stream"`
+}
+
 type ConfigLogger struct {
 	Json   bool       `mapstructure:"json"`
 	Stdout bool       `mapstructure:"stdout"`
@@ -60,9 +83,28 @@ type ConfigFile struct {
 }
 
 type ConfigClient struct {
-	Oauth2 ConfigOauth2 `mapstructure:"oauth2"`
+	Oauth2 ConfigOauth2     `mapstructure:"oauth2"`
+	Http   ConfigHttpClient `mapstructure:"http"`
+	Grpc   ConfigGrpcClient `mapstructure:"grpc"`
 }
 
+type ConfigGrpcClient struct {
+	Addr                 string          `mapstructure:"addr"`
+	KeepAlive            ConfigKeepAlive `mapstructure:"keep_alive"`
+	DefaultServiceConfig string          `mapstructure:"devault_service_config"`
+	CaCertPem            string          `mapstructure:"ca_cert_pem"`
+	CertServerName       string          `mapstructure:"cert_server_name"`
+	DialBlock            bool            `mapstructure:"dial_block"`
+	PermitWithoutStream  bool            `mapstructure:"permit_without_stream"`
+	ResolverScheme       string          `mapstructure:"resolver_scheme"`
+	ResolverServiceName  string          `mapstructure:"resolver_service_name"`
+}
+type ConfigHttpClient struct {
+	Url         string `mapstructure:"url"`
+	BearerToken string `mapstructure:"bearer_token"`
+	HmacSecret  string `mapstructure:"hmac_secret"`
+	HmacHeader  string `mapstructure:"hmac_header"`
+}
 type ConfigOauth2 struct {
 	ClientID      string            `mapstructure:"client_id"`
 	ClientSecret  string            `mapstructure:"client_secret"`
