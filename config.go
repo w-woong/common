@@ -109,6 +109,7 @@ type ConfigHttpClient struct {
 	HmacHeader  string `mapstructure:"hmac_header"`
 }
 type ConfigOauth2 struct {
+	Source        string            `mapstructure:"source"`
 	ClientID      string            `mapstructure:"client_id"`
 	ClientSecret  string            `mapstructure:"client_secret"`
 	RedirectUrl   string            `mapstructure:"redirect_url"`
