@@ -86,6 +86,9 @@ type ConfigClient struct {
 	Oauth2 ConfigOauth2     `mapstructure:"oauth2"`
 	Http   ConfigHttpClient `mapstructure:"http"`
 	Grpc   ConfigGrpcClient `mapstructure:"grpc"`
+
+	UserHttp ConfigHttpClient `mapstructure:"user_http"`
+	UserGrpc ConfigGrpcClient `mapstructure:"user_grpc"`
 }
 
 type ConfigGrpcClient struct {
