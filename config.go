@@ -109,7 +109,7 @@ type ConfigHttpClient struct {
 	HmacHeader  string `mapstructure:"hmac_header"`
 }
 type ConfigOauth2 struct {
-	Source        string            `mapstructure:"source"`
+	Token         ConfigToken       `mapstructure:"token"`
 	ClientID      string            `mapstructure:"client_id"`
 	ClientSecret  string            `mapstructure:"client_secret"`
 	RedirectUrl   string            `mapstructure:"redirect_url"`
@@ -120,7 +120,13 @@ type ConfigOauth2 struct {
 	AuthRequest   ConfigAuthRequest `mapstructure:"authrequest"`
 }
 
+type ConfigToken struct {
+	Source         string `mapstructure:"source"`
+	IDKeyName      string `mapstructure:"id_key_name"`
+	IDTokenKeyName string `mapstructure:"id_token_key_name"`
+}
 type ConfigAuthRequest struct {
 	ResponseUrl string `mapstructure:"response_url"`
+	AuthUrl     string `mapstructure:"auth_url"`
 	Wait        int    `mapstructure:"wait"`
 }
