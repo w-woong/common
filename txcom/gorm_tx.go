@@ -28,6 +28,11 @@ func (a *GormTxBeginner) Begin() (common.TxController, error) {
 	return NewGormTxController(tx), nil
 }
 
+// Begin starts transaction returning common.TxController that commits or rollbacks
+func (a *GormTxBeginner) BeginR() (common.TxController, error) {
+	return a.Begin()
+}
+
 // GormTxController is a transcation controller for gorm.DB that commits or rollbacks
 type GormTxController struct {
 	Tx *gorm.DB
