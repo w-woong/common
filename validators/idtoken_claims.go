@@ -7,6 +7,7 @@ var (
 )
 
 type IDTokenClaimsKey struct{}
+type TokenSourceKey struct{}
 
 type IDTokenClaims struct {
 	jwt.RegisteredClaims
