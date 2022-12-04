@@ -23,6 +23,13 @@ func HttpErrorWithMessage(w http.ResponseWriter, message string, status int) {
 
 	si.EncodeJson(w, NewHttpBody(message, status))
 }
+func HttpErrorWithBody(w http.ResponseWriter, status int, body *HttpBody) {
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	w.Header().Set("X-Content-Type-Options", "nosniff")
+	w.WriteHeader(status)
+
+	si.EncodeJson(w, body)
+}
 
 var HttpBodyOK = HttpBody{Status: http.StatusOK}
 var HttpBodyRecordNotFound = HttpBody{Count: 0, Status: http.StatusOK, Message: ErrRecordNotFound.Error()}
