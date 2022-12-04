@@ -3,6 +3,7 @@ module github.com/w-woong/common
 go 1.18
 
 require (
+	github.com/MicahParks/keyfunc v1.7.0
 	github.com/go-wonk/si v0.2.7
 	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/golang/mock v1.4.4
