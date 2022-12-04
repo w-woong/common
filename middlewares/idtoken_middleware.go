@@ -15,14 +15,12 @@ func AuthIDTokenHandler(next http.HandlerFunc, validator validators.IDTokenValid
 	tokenSourcCookieName string, tokenSourceHeaderName string) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
+		idToken := ""
 		cookie, err := r.Cookie(cookieName)
-		if err != nil {
-			common.HttpError(w, http.StatusUnauthorized)
-			logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
-			return
+		if err == nil {
+			idToken = cookie.Value
 		}
 
-		idToken := cookie.Value
 		if idToken == "" {
 			idToken = r.Header.Get(headerName)
 			if strings.HasPrefix(idToken, "Bearer") {
@@ -36,13 +34,11 @@ func AuthIDTokenHandler(next http.HandlerFunc, validator validators.IDTokenValid
 			}
 		}
 
+		tokenSource := ""
 		cookie, err = r.Cookie(tokenSourcCookieName)
-		if err != nil {
-			common.HttpError(w, http.StatusUnauthorized)
-			logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
-			return
+		if err == nil {
+			tokenSource = cookie.Value
 		}
-		tokenSource := cookie.Value
 		if tokenSource == "" {
 			tokenSource = r.Header.Get(tokenSourceHeaderName)
 		}
