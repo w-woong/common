@@ -2,6 +2,7 @@ package middlewares
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"strings"
 
@@ -47,12 +48,22 @@ func AuthIDTokenHandler(next http.HandlerFunc, validator validators.IDTokenValid
 		if v, ok := validator[tokenSource]; ok {
 			_, claims, err := v.Validate(idToken)
 			if err != nil {
+				if errors.Is(err, common.ErrTokenExpired) {
+					common.HttpErrorWithBody(w, http.StatusUnauthorized,
+						common.NewHttpBody(http.StatusText(http.StatusUnauthorized), common.StatusTryRefreshIDToken))
+					logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
+					return
+				}
 				common.HttpError(w, http.StatusUnauthorized)
 				logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
 				return
 			}
 			ctx = context.WithValue(ctx, validators.IDTokenClaimsKey{}, *claims)
 			ctx = context.WithValue(ctx, validators.TokenSourceKey{}, tokenSource)
+		} else {
+			common.HttpError(w, http.StatusUnauthorized)
+			logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
+			return
 		}
 
 		next.ServeHTTP(w, r.WithContext(ctx))

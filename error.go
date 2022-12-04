@@ -28,3 +28,7 @@ var (
 
 	ErrUnexpectedTokenClaims = errors.New("token has unexpected claims")
 )
+
+var (
+	StatusTryRefreshIDToken = 1000
+)
