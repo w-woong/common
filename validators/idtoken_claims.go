@@ -6,6 +6,8 @@ var (
 	NilIDTokenClaims = IDTokenClaims{}
 )
 
+type IDTokenClaimsKey struct{}
+
 type IDTokenClaims struct {
 	jwt.RegisteredClaims
 	Azp           string `json:"azp"`
