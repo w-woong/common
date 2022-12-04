@@ -109,21 +109,29 @@ type ConfigHttpClient struct {
 	HmacHeader  string `mapstructure:"hmac_header"`
 }
 type ConfigOauth2 struct {
-	Token         ConfigToken       `mapstructure:"token"`
-	ClientID      string            `mapstructure:"client_id"`
-	ClientSecret  string            `mapstructure:"client_secret"`
-	RedirectUrl   string            `mapstructure:"redirect_url"`
-	Scopes        []string          `mapstructure:"scopes"`
-	AuthUrl       string            `mapstructure:"auth_url"`
-	TokenUrl      string            `mapstructure:"token_url"`
-	OpenIDConfUrl string            `mapstructure:"openid_conf_url"`
-	AuthRequest   ConfigAuthRequest `mapstructure:"authrequest"`
+	Token             ConfigToken              `mapstructure:"token"`
+	ClientID          string                   `mapstructure:"client_id"`
+	ClientSecret      string                   `mapstructure:"client_secret"`
+	RedirectUrl       string                   `mapstructure:"redirect_url"`
+	Scopes            []string                 `mapstructure:"scopes"`
+	AuthUrl           string                   `mapstructure:"auth_url"`
+	TokenUrl          string                   `mapstructure:"token_url"`
+	OpenIDConfUrl     string                   `mapstructure:"openid_conf_url"`
+	AuthRequest       ConfigAuthRequest        `mapstructure:"authrequest"`
+	IDTokenValidators []ConfigIDTokenValidator `mapstructure:"id_token_validators"`
+}
+
+type ConfigIDTokenValidator struct {
+	Type          string      `mapstructure:"type"`
+	Token         ConfigToken `mapstructure:"token"`
+	OpenIDConfUrl string      `mapstructure:"openid_conf_url"`
 }
 
 type ConfigToken struct {
-	Source         string `mapstructure:"source"`
-	IDKeyName      string `mapstructure:"id_key_name"`
-	IDTokenKeyName string `mapstructure:"id_token_key_name"`
+	Source             string `mapstructure:"source"`
+	IDKeyName          string `mapstructure:"id_key_name"`
+	IDTokenKeyName     string `mapstructure:"id_token_key_name"`
+	TokenSourceKeyName string `mapstructure:"token_source_key_name"`
 }
 type ConfigAuthRequest struct {
 	ResponseUrl string `mapstructure:"response_url"`

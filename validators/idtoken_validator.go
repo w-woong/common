@@ -93,3 +93,25 @@ func GetJwks(url string) (json.RawMessage, error) {
 
 	return jwksJSON, nil
 }
+
+func GetJwksUrl(openIDConfUrl string) (string, error) {
+
+	res, err := http.Get(openIDConfUrl)
+	if err != nil {
+		return "", err
+	}
+	defer res.Body.Close()
+	resb, err := io.ReadAll(res.Body)
+	if err != nil {
+		return "", err
+	}
+	m := make(map[string]interface{})
+	if err = json.Unmarshal(resb, &m); err != nil {
+		return "", err
+	}
+	jwksUrl, ok := m["jwks_uri"]
+	if !ok {
+		return "", errors.New("not found")
+	}
+	return jwksUrl.(string), nil
+}
