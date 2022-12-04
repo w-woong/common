@@ -56,6 +56,7 @@ func AuthIDTokenHandler(next http.HandlerFunc, validator validators.IDTokenValid
 				return
 			}
 			ctx = context.WithValue(ctx, validators.IDTokenClaimsKey{}, *claims)
+			ctx = context.WithValue(ctx, validators.TokenSourceKey{}, tokenSource)
 		}
 
 		next.ServeHTTP(w, r.WithContext(ctx))
