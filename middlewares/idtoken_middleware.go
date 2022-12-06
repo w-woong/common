@@ -7,11 +7,12 @@ import (
 	"strings"
 
 	"github.com/w-woong/common"
+	"github.com/w-woong/common/dto"
 	"github.com/w-woong/common/logger"
-	"github.com/w-woong/common/validators"
+	"github.com/w-woong/common/port"
 )
 
-func AuthIDTokenHandler(next http.HandlerFunc, validator validators.IDTokenValidators,
+func AuthIDTokenHandler(next http.HandlerFunc, validator port.IDTokenValidators,
 	cookieName, headerName string,
 	tokenSourcCookieName string, tokenSourceHeaderName string) http.HandlerFunc {
 
@@ -58,8 +59,8 @@ func AuthIDTokenHandler(next http.HandlerFunc, validator validators.IDTokenValid
 				logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
 				return
 			}
-			ctx = context.WithValue(ctx, validators.IDTokenClaimsKey{}, *claims)
-			ctx = context.WithValue(ctx, validators.TokenSourceKey{}, tokenSource)
+			ctx = context.WithValue(ctx, dto.IDTokenClaimsKey{}, *claims)
+			ctx = context.WithValue(ctx, dto.TokenSourceKey{}, tokenSource)
 		} else {
 			common.HttpError(w, http.StatusUnauthorized)
 			logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))

@@ -1,4 +1,4 @@
-package validators
+package adapter
 
 import (
 	"encoding/json"
@@ -9,13 +9,8 @@ import (
 	"github.com/MicahParks/keyfunc"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/w-woong/common"
+	"github.com/w-woong/common/dto"
 )
-
-type IDTokenValidators map[string]IDTokenValidator
-
-type IDTokenValidator interface {
-	Validate(idToken string) (*jwt.Token, *IDTokenClaims, error)
-}
 
 type jwksIDTokenValidator struct {
 	jwksUrl string
@@ -27,7 +22,7 @@ func NewJwksIDTokenValidator(jwksUrl string) *jwksIDTokenValidator {
 	}
 }
 
-func (u *jwksIDTokenValidator) Validate(idToken string) (*jwt.Token, *IDTokenClaims, error) {
+func (u *jwksIDTokenValidator) Validate(idToken string) (*jwt.Token, *dto.IDTokenClaims, error) {
 	if idToken == "" {
 		return nil, nil, common.ErrIDTokenNotFound
 	}
@@ -46,9 +41,9 @@ func (u *jwksIDTokenValidator) Validate(idToken string) (*jwt.Token, *IDTokenCla
 
 	// Parse the JWT.
 	// token, err := jwt.Parse(idToken, jwks.Keyfunc)
-	token, err := jwt.ParseWithClaims(idToken, &IDTokenClaims{}, jwks.Keyfunc)
+	token, err := jwt.ParseWithClaims(idToken, &dto.IDTokenClaims{}, jwks.Keyfunc)
 	if token.Valid {
-		claims, ok := token.Claims.(*IDTokenClaims)
+		claims, ok := token.Claims.(*dto.IDTokenClaims)
 		if !ok {
 			return nil, nil, common.ErrUnexpectedTokenClaims
 		}
@@ -59,13 +54,13 @@ func (u *jwksIDTokenValidator) Validate(idToken string) (*jwt.Token, *IDTokenCla
 		return nil, nil, common.ErrTokenExpired
 	} else if errors.Is(err, jwt.ErrTokenNotValidYet) {
 		// return nil, auth.ErrTokenNotValidYet
-		claims, ok := token.Claims.(*IDTokenClaims)
+		claims, ok := token.Claims.(*dto.IDTokenClaims)
 		if !ok {
 			return nil, nil, common.ErrUnexpectedTokenClaims
 		}
 		return token, claims, nil
 	} else if errors.Is(err, jwt.ErrTokenUsedBeforeIssued) {
-		claims, ok := token.Claims.(*IDTokenClaims)
+		claims, ok := token.Claims.(*dto.IDTokenClaims)
 		if !ok {
 			return nil, nil, common.ErrUnexpectedTokenClaims
 		}
