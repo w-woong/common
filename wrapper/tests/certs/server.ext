@@ -1,0 +1,11 @@
+authorityKeyIdentifier=keyid,issuer
+basicConstraints=CA:FALSE
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = dev-daiso.co.kr
+DNS.2 = git.daiso.co.kr
+DNS.3 = dev.daiso.co.kr
+DNS.4 = localhost
+IP.1 = 127.0.0.1
+IP.2 = 172.16.130.144
+

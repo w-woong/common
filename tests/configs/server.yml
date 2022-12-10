@@ -1,0 +1,86 @@
+
+logger:
+  json: true
+  stdout: true
+  file:
+    name: 'logs/agent.log'
+    max_size: 50
+    max_backup: 100
+    max_age: 31
+    compressed: true
+  level: 'debug'
+
+monitor:
+  push:
+    timeout: 6
+    app: 'monitor-app'
+    url: 'http://localhost:45507'
+    path: '/api/cts/svclog'
+    time_limit: 'workday'
+    bearer_token: 'a'
+    max_conns: 10
+    conn_timeout: 6
+    idle_conn_timeout: 3
+    host_name: 'server01'
+    host_addr: 'localhost'
+    system_name: 'system-a'
+    service_name: 'service-a'
+    
+server:
+  grpc:
+    timeout: 6
+    healthcheck: false
+    enforcement_policy:
+      use: true
+      min_time: 6
+      permit_without_stream: true
+    keep_alive:
+      max_conn_idle: 15
+      max_conn_age: 15
+      max_conn_age_grace: 6
+      time: 6
+      timeout: 1
+
+  repo:
+    driver: 'pgx'
+    conn_str: 'host=test port=5432 user=test password=test dbname=adpos sslmode=disable connect_timeout=60 TimeZone=Asia/Seoul'
+    # used when driver is oci8, postgres, mssql...
+    max_idle_conns: 3
+    max_open_conns: 15
+    conn_max_lifetime_in_min: 15
+
+
+client:
+  event_http:
+    url: 'http://localhost:49004'
+    hmac_secret: 'asdf'
+    hmac_header: 'header-key'
+  membership_http:
+    url: 'http://localhost:28080'
+    hmac_secret: 'asdf'
+  grpc:
+    addr: 'localhost:59004,localhost:59004'
+    keep_alive:
+      time: 6
+      timeout: 1
+      permit_without_stream: true
+
+    resolver_scheme: 'myresolver'
+    resolver_service_name: 'myresolver-grpc'
+    default_service_config: >
+      {"loadBalancingConfig": [{"round_robin":{}}],
+        "methodConfig": [{
+          "name": [{"service": "grpc.myresolver"}],
+          "waitForReady": true,
+          "retryPolicy": {
+            "MaxAttempts": 4,
+            "InitialBackoff": ".01s",
+            "MaxBackoff": ".01s",
+            "BackoffMultiplier": 1.0,
+            "RetryableStatusCodes": [ "UNAVAILABLE" ]
+          }
+        }]
+      }
+    ca_cert_pem: './certs/server.crt'
+    cert_server_name: 'localhost'
+    dial_block: true
