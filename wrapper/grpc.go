@@ -41,7 +41,7 @@ func (s *GrpcServer) Stop() error {
 // NewGrpcServer
 // pb.RegisterEventServer(svr, eventGrpcServer)
 //
-func NewGrpcServer(conf common.ConfigGrpc, certPem, certKey string, apmActive bool) (*grpc.Server, error) {
+func NewGrpcServer(conf common.ConfigGrpc, certPem, certKey string, apmActive bool, opt ...grpc.ServerOption) (*grpc.Server, error) {
 
 	opts := []grpc.ServerOption{}
 	if certPem != "" && certKey != "" {
@@ -70,6 +70,7 @@ func NewGrpcServer(conf common.ConfigGrpc, certPem, certKey string, apmActive bo
 		opts = append(opts, grpc.UnaryInterceptor(apmgrpc.NewUnaryServerInterceptor()))
 		opts = append(opts, grpc.StreamInterceptor(apmgrpc.NewStreamServerInterceptor()))
 	}
+	opts = append(opts, opt...)
 	svr := grpc.NewServer(opts...)
 	if conf.HealthCheck {
 		healthCheck := health.NewServer()
