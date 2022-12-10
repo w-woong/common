@@ -5,6 +5,10 @@ import (
 	"time"
 )
 
+var (
+	NilPassword = Password{}
+)
+
 type Password struct {
 	ID        string     `json:"id"`
 	CreatedAt *time.Time `json:"created_at"`
