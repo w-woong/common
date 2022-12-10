@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option go_package = "github.com/common/dto/protos/v1";
+
+import "google/protobuf/timestamp.proto";
+// import "google/protobuf/any.proto";
+
+message Personal {
+    string id = 1;
+    google.protobuf.Timestamp createdAt = 2;
+    google.protobuf.Timestamp updatedAt = 3;
+    string userID = 4;
+    string firstName = 5;
+    string middleName = 6;
+    string lastName = 7;
+    int64 birthYear = 8;
+    int64 birthMonth = 9;
+    int64 birthDay = 10;
+    google.protobuf.Timestamp birthDate = 11;
+    string gender = 12;
+    string nationality = 13;
+}
