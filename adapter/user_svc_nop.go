@@ -16,6 +16,6 @@ func (UserSvcNop) RegisterUser(ctx context.Context, loginSource string, user dto
 	return dto.NilUser, nil
 }
 
-func (UserSvcNop) FindByLoginID(ctx context.Context, tokenIdentifier, idToken string) (dto.User, error) {
+func (UserSvcNop) FindByLoginID(ctx context.Context, loginSource, tokenIdentifier, idToken string) (dto.User, error) {
 	return dto.NilUser, nil
 }
