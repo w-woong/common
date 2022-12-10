@@ -17,11 +17,13 @@ type userHttp struct {
 	baseUrl            string
 	host               string
 	bearerToken        string
+	tokenSourceKey     string
 	tokenIdentifierKey string
 	idTokenKey         string
 }
 
-func NewUserHttp(client *http.Client, baseUrl string, bearerToken string, tokenIdentifierKey, idTokenKey string) *userHttp {
+func NewUserHttp(client *http.Client, baseUrl string, bearerToken string,
+	tokenSourceKey, tokenIdentifierKey, idTokenKey string) *userHttp {
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json; charset=utf-8"
 
@@ -35,6 +37,7 @@ func NewUserHttp(client *http.Client, baseUrl string, bearerToken string, tokenI
 		client:             c,
 		baseUrl:            baseUrl,
 		bearerToken:        bearerToken,
+		tokenSourceKey:     tokenSourceKey,
 		tokenIdentifierKey: tokenIdentifierKey,
 		idTokenKey:         idTokenKey,
 	}
@@ -67,13 +70,14 @@ func (a *userHttp) RegisterUser(ctx context.Context, loginSource string, user dt
 	return resUser, nil
 }
 
-func (a *userHttp) FindByLoginID(ctx context.Context, tokenIdentifier, idToken string) (dto.User, error) {
+func (a *userHttp) FindByLoginID(ctx context.Context, loginSource, tokenIdentifier, idToken string) (dto.User, error) {
 
 	resUser := dto.User{}
 	res := common.HttpBody{
 		Document: &resUser,
 	}
 	header := make(http.Header)
+	header[a.tokenSourceKey] = []string{loginSource}
 	header[a.tokenIdentifierKey] = []string{tokenIdentifier}
 	header[a.idTokenKey] = []string{idToken}
 	err := a.client.RequestGetDecodeContext(ctx, "/v1/user/account", header, nil, &res)
