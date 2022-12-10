@@ -3,6 +3,7 @@ package conv
 import (
 	"github.com/w-woong/common/dto"
 	pb "github.com/w-woong/common/dto/protos/user/v1"
+	"github.com/w-woong/common/utils"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -127,8 +128,8 @@ func ToEmailProtoFromdto(input dto.Email) (*pb.Email, error) {
 
 	output := pb.Email{
 		Id:        input.ID,
-		CreatedAt: timestamppb.New(*input.CreatedAt),
-		UpdatedAt: timestamppb.New(*input.UpdatedAt),
+		CreatedAt: utils.NewTimestampPB(input.CreatedAt),
+		UpdatedAt: utils.NewTimestampPB(input.UpdatedAt),
 		UserID:    input.UserID,
 		Email:     input.Email,
 		Priority:  uint32(input.Priority),
@@ -158,8 +159,8 @@ func ToPersonalProtoFromDto(input dto.Personal) (*pb.Personal, error) {
 
 	output := pb.Personal{
 		Id:          input.ID,
-		CreatedAt:   timestamppb.New(*input.CreatedAt),
-		UpdatedAt:   timestamppb.New(*input.UpdatedAt),
+		CreatedAt:   utils.NewTimestampPB(input.CreatedAt),
+		UpdatedAt:   utils.NewTimestampPB(input.UpdatedAt),
 		UserID:      input.UserID,
 		FirstName:   input.FirstName,
 		MiddleName:  input.MiddleName,
@@ -179,8 +180,8 @@ func ToPasswordProtoFromDto(input dto.Password) (*pb.Password, error) {
 
 	output := pb.Password{
 		Id:        input.ID,
-		CreatedAt: timestamppb.New(*input.CreatedAt),
-		UpdatedAt: timestamppb.New(*input.UpdatedAt),
+		CreatedAt: utils.NewTimestampPB(input.CreatedAt),
+		UpdatedAt: utils.NewTimestampPB(input.UpdatedAt),
 		UserID:    input.UserID,
 		Value:     input.Value,
 	}
@@ -195,8 +196,8 @@ func ToUserProtoFromDto(input dto.User) (*pb.User, error) {
 
 	output := pb.User{
 		Id:          input.ID,
-		CreatedAt:   timestamppb.New(*input.CreatedAt),
-		UpdatedAt:   timestamppb.New(*input.UpdatedAt),
+		CreatedAt:   utils.NewTimestampPB(input.CreatedAt),
+		UpdatedAt:   utils.NewTimestampPB(input.UpdatedAt),
 		LogindID:    input.LoginID,
 		LoginType:   input.LoginType,
 		LoginSource: input.LoginSource,
