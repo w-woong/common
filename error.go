@@ -7,8 +7,10 @@ var ErrLoginIDAlreadyExists = errors.New("login id already exists")
 var ErrCreateUser = errors.New("failed to create user")
 
 var (
-	ErrIDTokenNotFound     = errors.New("id token not found")
-	ErrIDTokenInconsistent = errors.New("id token is not consistent")
+	ErrTokenSourceNotFound     = errors.New("token source not found")
+	ErrTokenIdentifierNotFound = errors.New("token identifier not found")
+	ErrIDTokenNotFound         = errors.New("id token not found")
+	ErrIDTokenInconsistent     = errors.New("id token is not consistent")
 
 	ErrInvalidKey      = errors.New("key is invalid")
 	ErrInvalidKeyType  = errors.New("key is of invalid type")

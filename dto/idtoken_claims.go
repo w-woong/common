@@ -6,8 +6,10 @@ var (
 	NilIDTokenClaims = IDTokenClaims{}
 )
 
+type TokenIdentifierKey struct{}
 type IDTokenClaimsKey struct{}
 type TokenSourceKey struct{}
+type UserAccountKey struct{}
 
 type IDTokenClaims struct {
 	jwt.RegisteredClaims

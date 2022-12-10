@@ -17,7 +17,9 @@ func Test_userHttp_RegisterUser(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	userHttp := adapter.NewUserHttp(sihttp.DefaultInsecureClient(), "https://localhost:8080", "ab2316584873095f017f6dfa7a9415794f563fcc473eb3fe65b9167e37fd5a4b", "tid", "id_token")
+	userHttp := adapter.NewUserHttp(sihttp.DefaultInsecureClient(), "https://localhost:8080", "ab2316584873095f017f6dfa7a9415794f563fcc473eb3fe65b9167e37fd5a4b",
+		"token_source", "tid", "id_token")
+
 	_, err := userHttp.RegisterUser(ctx, "google", dto.User{
 		LoginID:     "asdf",
 		LoginType:   "token",
