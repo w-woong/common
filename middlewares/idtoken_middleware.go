@@ -237,18 +237,21 @@ func AuthIDTokenInterceptor(validator port.IDTokenValidators) grpc.UnaryServerIn
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		switch v := req.(type) {
 		case IDTokener:
-			idToken := v.GetIdToken()
-			tokenSource := v.GetTokenSource()
+			if info.FullMethod == "/UserService/FindByLoginID" {
+				idToken := v.GetIdToken()
+				tokenSource := v.GetTokenSource()
 
-			_, claims, err := validate(validator, tokenSource, idToken)
-			if err != nil {
-				if errors.Is(err, common.ErrTokenExpired) {
-					return nil, status.Error(codes.Code(common.StatusTryRefreshIDToken), err.Error())
+				_, claims, err := validate(validator, tokenSource, idToken)
+				if err != nil {
+					if errors.Is(err, common.ErrTokenExpired) {
+						return nil, status.Error(codes.Code(common.StatusTryRefreshIDToken), err.Error())
+					}
+					return nil, err
 				}
-				return nil, err
+				ctx = context.WithValue(ctx, dto.IDTokenClaimsKey{}, *claims)
+				ctx = context.WithValue(ctx, dto.TokenSourceKey{}, tokenSource)
+				return handler(ctx, req)
 			}
-			ctx = context.WithValue(ctx, dto.IDTokenClaimsKey{}, *claims)
-			ctx = context.WithValue(ctx, dto.TokenSourceKey{}, tokenSource)
 			return handler(ctx, req)
 		default:
 			return nil, common.ErrIDTokenNotFound
