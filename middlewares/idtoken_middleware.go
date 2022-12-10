@@ -263,6 +263,11 @@ func AuthIDTokenInterceptor(validator port.IDTokenValidators) grpc.UnaryServerIn
 
 func AuthIDTokenUserAccountInterceptor(validator port.IDTokenValidators, userSvc port.UserSvc) grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+		if info.FullMethod != "/UserService/FindByLoginID" {
+
+			return handler(ctx, req)
+		}
+
 		switch v := req.(type) {
 		case IDTokener:
 			idToken := v.GetIdToken()
