@@ -4,7 +4,6 @@ import (
 	"github.com/w-woong/common/dto"
 	pb "github.com/w-woong/common/dto/protos/user/v1"
 	"github.com/w-woong/common/utils"
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func ToEmailDtoFromProto(input *pb.Email) (dto.Email, error) {
@@ -168,7 +167,7 @@ func ToPersonalProtoFromDto(input dto.Personal) (*pb.Personal, error) {
 		BirthYear:   int64(input.BirthYear),
 		BirthMonth:  int64(input.BirthMonth),
 		BirthDay:    int64(input.BirthDay),
-		BirthDate:   timestamppb.New(*input.BirthDate),
+		BirthDate:   utils.NewTimestampPB(input.BirthDate),
 		Gender:      input.Gender,
 		Nationality: input.Nationality,
 	}
