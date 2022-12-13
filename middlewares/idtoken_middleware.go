@@ -75,27 +75,13 @@ func GetTokenIdentifier(r *http.Request, key string) (string, error) {
 	return val, nil
 }
 
-func AuthIDTokenHandler(next http.HandlerFunc, validator port.IDTokenValidators,
-	tokenIdentifierKey string, idTokenKey string, tokenSourcKey string) http.HandlerFunc {
+func AuthIDTokenHandler(next http.HandlerFunc, validator port.IDTokenValidators) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		idToken, err := GetIDToken(r, idTokenKey)
-		if err != nil {
-			common.HttpError(w, http.StatusUnauthorized)
-			logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
-			return
-		}
-
-		tokenSource, err := GetTokenSource(r, tokenSourcKey)
-		if err != nil {
-			common.HttpError(w, http.StatusUnauthorized)
-			logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
-			return
-		}
 
 		ctx := r.Context()
 
-		_, claims, err := validate(validator, tokenSource, idToken)
+		_, claims, token, err := validate(r, validator)
 		if err != nil {
 			if errors.Is(err, common.ErrTokenExpired) {
 				common.HttpErrorWithBody(w, http.StatusUnauthorized,
@@ -108,35 +94,39 @@ func AuthIDTokenHandler(next http.HandlerFunc, validator port.IDTokenValidators,
 			return
 		}
 		ctx = context.WithValue(ctx, dto.IDTokenClaimsKey{}, *claims)
-		ctx = context.WithValue(ctx, dto.TokenSourceKey{}, tokenSource)
+		ctx = context.WithValue(ctx, dto.TokenSourceKey{}, token.TokenSource)
 		next.ServeHTTP(w, r.WithContext(ctx))
-
-		// if v, ok := validator[tokenSource]; ok {
-		// 	_, claims, err := v.Validate(idToken)
-		// 	if err != nil {
-		// 		if errors.Is(err, common.ErrTokenExpired) {
-		// 			common.HttpErrorWithBody(w, http.StatusUnauthorized,
-		// 				common.NewHttpBody(http.StatusText(http.StatusUnauthorized), common.StatusTryRefreshIDToken))
-		// 			logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
-		// 			return
-		// 		}
-		// 		common.HttpError(w, http.StatusUnauthorized)
-		// 		logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
-		// 		return
-		// 	}
-		// 	ctx = context.WithValue(ctx, dto.IDTokenClaimsKey{}, *claims)
-		// 	ctx = context.WithValue(ctx, dto.TokenSourceKey{}, tokenSource)
-		// } else {
-		// 	common.HttpError(w, http.StatusUnauthorized)
-		// 	logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
-		// 	return
-		// }
-
-		// next.ServeHTTP(w, r.WithContext(ctx))
 	}
 }
 
-func validate(validator port.IDTokenValidators, tokenSource, idToken string) (*jwt.Token, *dto.IDTokenClaims, error) {
+func validate(r *http.Request, validator port.IDTokenValidators) (*jwt.Token, *dto.IDTokenClaims, dto.Token, error) {
+	for k, v := range validator {
+		tokenSource, err := GetTokenSource(r, v.TokenSourceKey())
+		if err != nil {
+			return nil, nil, dto.NilToken, err
+		}
+		if strings.EqualFold(k, tokenSource) {
+			tokenIdentifier, err := GetTokenIdentifier(r, v.TokenIdentifierKey())
+			if err != nil {
+				return nil, nil, dto.NilToken, err
+			}
+			idToken, err := GetIDToken(r, v.IDTokenKey())
+			if err != nil {
+				return nil, nil, dto.NilToken, err
+			}
+			jwtToken, claims, err := v.Validate(idToken)
+			return jwtToken, claims, dto.Token{
+				ID:          tokenIdentifier,
+				IDToken:     idToken,
+				TokenSource: tokenSource,
+			}, err
+		}
+	}
+
+	return nil, nil, dto.NilToken, common.ErrTokenSourceNotFound
+}
+
+func validateGrpc(validator port.IDTokenValidators, tokenSource, idToken string) (*jwt.Token, *dto.IDTokenClaims, error) {
 	if v, ok := validator[tokenSource]; ok {
 		return v.Validate(idToken)
 	}
@@ -145,34 +135,33 @@ func validate(validator port.IDTokenValidators, tokenSource, idToken string) (*j
 }
 
 func AuthIDTokenUserAccountHandler(next http.HandlerFunc, validator port.IDTokenValidators,
-	userSvc port.UserSvc,
-	tokenIdentifierKey string, idTokenKey string, tokenSourcKey string) http.HandlerFunc {
+	userSvc port.UserSvc) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		idToken, err := GetIDToken(r, idTokenKey)
-		if err != nil {
-			common.HttpError(w, http.StatusUnauthorized)
-			logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
-			return
-		}
+		// idToken, err := GetIDToken(r, idTokenKey)
+		// if err != nil {
+		// 	common.HttpError(w, http.StatusUnauthorized)
+		// 	logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
+		// 	return
+		// }
 
-		tokenSource, err := GetTokenSource(r, tokenSourcKey)
-		if err != nil {
-			common.HttpError(w, http.StatusUnauthorized)
-			logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
-			return
-		}
+		// tokenSource, err := GetTokenSource(r, tokenSourcKey)
+		// if err != nil {
+		// 	common.HttpError(w, http.StatusUnauthorized)
+		// 	logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
+		// 	return
+		// }
 
-		tokenIdentifier, err := GetTokenIdentifier(r, tokenIdentifierKey)
-		if err != nil {
-			common.HttpError(w, http.StatusUnauthorized)
-			logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
-			return
-		}
+		// tokenIdentifier, err := GetTokenIdentifier(r, tokenIdentifierKey)
+		// if err != nil {
+		// 	common.HttpError(w, http.StatusUnauthorized)
+		// 	logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
+		// 	return
+		// }
 
 		ctx := r.Context()
 
-		_, claims, err := validate(validator, tokenSource, idToken)
+		_, claims, token, err := validate(r, validator)
 		if err != nil {
 			if errors.Is(err, common.ErrTokenExpired) {
 				common.HttpErrorWithBody(w, http.StatusUnauthorized,
@@ -184,46 +173,16 @@ func AuthIDTokenUserAccountHandler(next http.HandlerFunc, validator port.IDToken
 			logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
 			return
 		}
-		userAccount, err := userSvc.FindByLoginID(ctx, tokenSource, tokenIdentifier, idToken)
+		userAccount, err := userSvc.FindByLoginID(ctx, token.TokenSource, token.ID, token.IDToken)
 		if err != nil {
 			common.HttpError(w, http.StatusUnauthorized)
 			logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
 			return
 		}
 		ctx = context.WithValue(ctx, dto.IDTokenClaimsKey{}, *claims)
-		ctx = context.WithValue(ctx, dto.TokenSourceKey{}, tokenSource)
+		ctx = context.WithValue(ctx, dto.TokenSourceKey{}, token.TokenSource)
 		ctx = context.WithValue(ctx, dto.UserAccountKey{}, userAccount)
 		next.ServeHTTP(w, r.WithContext(ctx))
-
-		// if v, ok := validator[tokenSource]; ok {
-		// 	_, claims, err := v.Validate(idToken)
-		// 	if err != nil {
-		// 		if errors.Is(err, common.ErrTokenExpired) {
-		// 			common.HttpErrorWithBody(w, http.StatusUnauthorized,
-		// 				common.NewHttpBody(http.StatusText(http.StatusUnauthorized), common.StatusTryRefreshIDToken))
-		// 			logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
-		// 			return
-		// 		}
-		// 		common.HttpError(w, http.StatusUnauthorized)
-		// 		logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
-		// 		return
-		// 	}
-		// 	userAccount, err := userSvc.FindByLoginID(ctx, tokenSource, tokenIdentifier, idToken)
-		// 	if err != nil {
-		// 		common.HttpError(w, http.StatusUnauthorized)
-		// 		logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
-		// 		return
-		// 	}
-		// 	ctx = context.WithValue(ctx, dto.IDTokenClaimsKey{}, *claims)
-		// 	ctx = context.WithValue(ctx, dto.TokenSourceKey{}, tokenSource)
-		// 	ctx = context.WithValue(ctx, dto.UserAccountKey{}, userAccount)
-		// } else {
-		// 	common.HttpError(w, http.StatusUnauthorized)
-		// 	logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
-		// 	return
-		// }
-
-		// next.ServeHTTP(w, r.WithContext(ctx))
 	}
 }
 
@@ -245,7 +204,7 @@ func AuthIDTokenInterceptor(validator port.IDTokenValidators) grpc.UnaryServerIn
 			idToken := v.GetIdToken()
 			tokenSource := v.GetTokenSource()
 
-			_, claims, err := validate(validator, tokenSource, idToken)
+			_, claims, err := validateGrpc(validator, tokenSource, idToken)
 			if err != nil {
 				if errors.Is(err, common.ErrTokenExpired) {
 					return nil, status.Error(codes.Code(common.StatusTryRefreshIDToken), err.Error())
@@ -274,7 +233,7 @@ func AuthIDTokenUserAccountInterceptor(validator port.IDTokenValidators, userSvc
 			tokenSource := v.GetTokenSource()
 			tokenIdentifier := v.GetTid()
 
-			_, claims, err := validate(validator, tokenSource, idToken)
+			_, claims, err := validateGrpc(validator, tokenSource, idToken)
 			if err != nil {
 				if errors.Is(err, common.ErrTokenExpired) {
 					return nil, status.Error(codes.Code(common.StatusTryRefreshIDToken), err.Error())
