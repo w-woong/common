@@ -47,7 +47,7 @@ func NewUserHttp(client *http.Client, baseUrl string, bearerToken string,
 	return a
 }
 
-func (a *userHttp) RegisterUser(ctx context.Context, loginSource string, user dto.User) (dto.User, error) {
+func (a *userHttp) RegisterUser(ctx context.Context, user dto.User) (dto.User, error) {
 
 	req := common.HttpBody{
 		Count:    1,
@@ -58,7 +58,7 @@ func (a *userHttp) RegisterUser(ctx context.Context, loginSource string, user dt
 	res := common.HttpBody{
 		Document: &resUser,
 	}
-	err := a.client.RequestPostDecodeContext(ctx, "/v1/user/"+loginSource, nil, &req, &res)
+	err := a.client.RequestPostDecodeContext(ctx, "/v1/user", nil, &req, &res)
 	if err != nil {
 		if se, ok := err.(*sihttp.SiHttpError); ok {
 			if se.Status == common.StatusTryRefreshIDToken {
