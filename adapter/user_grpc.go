@@ -23,7 +23,7 @@ func NewUserGrpc(conn *grpc.ClientConn) *userGrpc {
 	}
 }
 
-func (a *userGrpc) RegisterUser(ctx context.Context, loginSource string, user dto.User) (dto.User, error) {
+func (a *userGrpc) RegisterUser(ctx context.Context, user dto.User) (dto.User, error) {
 
 	userProto, err := conv.ToUserProtoFromDto(user)
 	if err != nil {
@@ -31,7 +31,7 @@ func (a *userGrpc) RegisterUser(ctx context.Context, loginSource string, user dt
 	}
 
 	reply, err := a.client.RegisterUser(ctx, &pb.RegisterUserRequest{
-		LoginSource: loginSource,
+		LoginSource: userProto.LoginSource,
 		Document:    userProto,
 	})
 	if err != nil {
