@@ -60,6 +60,11 @@ func (a *userHttp) RegisterUser(ctx context.Context, loginSource string, user dt
 	}
 	err := a.client.RequestPostDecodeContext(ctx, "/v1/user/"+loginSource, nil, &req, &res)
 	if err != nil {
+		if se, ok := err.(*sihttp.SiHttpError); ok {
+			if se.Status == common.StatusTryRefreshIDToken {
+				return dto.NilUser, common.ErrTokenExpired
+			}
+		}
 		return dto.NilUser, err
 	}
 
@@ -82,6 +87,11 @@ func (a *userHttp) FindByLoginID(ctx context.Context, loginSource, tokenIdentifi
 	header[a.idTokenKey] = []string{idToken}
 	err := a.client.RequestGetDecodeContext(ctx, "/v1/user/account", header, nil, &res)
 	if err != nil {
+		if se, ok := err.(*sihttp.SiHttpError); ok {
+			if se.Status == common.StatusTryRefreshIDToken {
+				return dto.NilUser, common.ErrTokenExpired
+			}
+		}
 		return dto.NilUser, err
 	}
 
