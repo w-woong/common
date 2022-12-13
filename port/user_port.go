@@ -7,6 +7,6 @@ import (
 )
 
 type UserSvc interface {
-	RegisterUser(ctx context.Context, loginSource string, user dto.User) (dto.User, error)
+	RegisterUser(ctx context.Context, user dto.User) (dto.User, error)
 	FindByLoginID(ctx context.Context, loginSource, tokenIdentifier, idToken string) (dto.User, error)
 }
