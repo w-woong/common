@@ -14,5 +14,8 @@ type IDTokenRefresher interface {
 type IDTokenValidators map[string]IDTokenValidator
 
 type IDTokenValidator interface {
+	TokenSourceKey() string
+	TokenIdentifierKey() string
+	IDTokenKey() string
 	Validate(idToken string) (*jwt.Token, *dto.IDTokenClaims, error)
 }
