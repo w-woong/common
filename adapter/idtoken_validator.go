@@ -13,13 +13,31 @@ import (
 )
 
 type jwksIDTokenValidator struct {
-	jwksUrl string
+	jwksUrl            string
+	tokenSourceKey     string
+	tokenIdentifierKey string
+	idTokenKey         string
 }
 
-func NewJwksIDTokenValidator(jwksUrl string) *jwksIDTokenValidator {
+func NewJwksIDTokenValidator(jwksUrl string, tokenSourceKey, tokenIdentifierKey, idTokenKey string) *jwksIDTokenValidator {
 	return &jwksIDTokenValidator{
-		jwksUrl: jwksUrl,
+		jwksUrl:            jwksUrl,
+		tokenSourceKey:     tokenSourceKey,
+		tokenIdentifierKey: tokenIdentifierKey,
+		idTokenKey:         idTokenKey,
 	}
+}
+
+func (u *jwksIDTokenValidator) TokenSourceKey() string {
+	return u.tokenSourceKey
+}
+
+func (u *jwksIDTokenValidator) TokenIdentifierKey() string {
+	return u.tokenIdentifierKey
+}
+
+func (u *jwksIDTokenValidator) IDTokenKey() string {
+	return u.idTokenKey
 }
 
 func (u *jwksIDTokenValidator) Validate(idToken string) (*jwt.Token, *dto.IDTokenClaims, error) {
