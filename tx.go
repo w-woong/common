@@ -17,8 +17,8 @@ type TxController interface {
 }
 
 type IsolationLevelSetter interface {
-	SetReadUncommitted() error
-	SetReadCommitted() error
-	SetRepeatableRead() error
-	SetSerializable() error
+	SetReadUncommitted(tx TxController) error
+	SetReadCommitted(tx TxController) error
+	SetRepeatableRead(tx TxController) error
+	SetSerializable(tx TxController) error
 }

@@ -1,19 +1,18 @@
 package txcom
 
-import "gorm.io/gorm"
+import (
+	"github.com/w-woong/common"
+)
 
 type GormIsolationLevelSetter struct {
-	db *gorm.DB
 }
 
-func NewGormIsolationLevelSetter(db *gorm.DB) *GormIsolationLevelSetter {
-	return &GormIsolationLevelSetter{
-		db: db,
-	}
+func NewGormIsolationLevelSetter() *GormIsolationLevelSetter {
+	return &GormIsolationLevelSetter{}
 }
 
-func (a *GormIsolationLevelSetter) SetReadUncommitted() error {
-	res := a.db.Exec("set transaction isolation level read uncommitted")
+func (a *GormIsolationLevelSetter) SetReadUncommitted(tx common.TxController) error {
+	res := tx.(*GormTxController).Tx.Exec("set transaction isolation level read uncommitted")
 	if res.Error != nil {
 		return res.Error
 	}
@@ -21,8 +20,8 @@ func (a *GormIsolationLevelSetter) SetReadUncommitted() error {
 	return nil
 }
 
-func (a *GormIsolationLevelSetter) SetReadCommitted() error {
-	res := a.db.Exec("set transaction isolation level read committed")
+func (a *GormIsolationLevelSetter) SetReadCommitted(tx common.TxController) error {
+	res := tx.(*GormTxController).Tx.Exec("set transaction isolation level read committed")
 	if res.Error != nil {
 		return res.Error
 	}
@@ -30,8 +29,8 @@ func (a *GormIsolationLevelSetter) SetReadCommitted() error {
 	return nil
 }
 
-func (a *GormIsolationLevelSetter) SetRepeatableRead() error {
-	res := a.db.Exec("set transaction isolation level repeatable read")
+func (a *GormIsolationLevelSetter) SetRepeatableRead(tx common.TxController) error {
+	res := tx.(*GormTxController).Tx.Exec("set transaction isolation level repeatable read")
 	if res.Error != nil {
 		return res.Error
 	}
@@ -39,8 +38,8 @@ func (a *GormIsolationLevelSetter) SetRepeatableRead() error {
 	return nil
 }
 
-func (a *GormIsolationLevelSetter) SetSerializable() error {
-	res := a.db.Exec("set transaction isolation level serializable")
+func (a *GormIsolationLevelSetter) SetSerializable(tx common.TxController) error {
+	res := tx.(*GormTxController).Tx.Exec("set transaction isolation level serializable")
 	if res.Error != nil {
 		return res.Error
 	}
