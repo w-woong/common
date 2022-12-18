@@ -15,3 +15,10 @@ type TxController interface {
 	Commit() error
 	Rollback() error
 }
+
+type IsolationLevelSetter interface {
+	SetReadUncommitted() error
+	SetReadCommitted() error
+	SetRepeatableRead() error
+	SetSerializable() error
+}
