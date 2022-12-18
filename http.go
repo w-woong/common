@@ -1,6 +1,7 @@
 package common
 
 import (
+	"encoding/json"
 	"io"
 	"net/http"
 
@@ -47,6 +48,11 @@ func NewHttpBody(message string, status int) *HttpBody {
 		Status:  status,
 		Message: message,
 	}
+}
+
+func (m *HttpBody) String() string {
+	b, _ := json.Marshal(m)
+	return string(b)
 }
 
 func (m *HttpBody) EncodeTo(w io.Writer) error {
