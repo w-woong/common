@@ -15,7 +15,6 @@ func BenchmarkDebug(b *testing.B) {
 func BenchmarkDebug_WithOption(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		logger.Debug("hello with fields", logger.TopicField("tp-event"))
-		// log.Debug("hello", logger.Topic("tp-event"), logger.Value([]byte("tp-value")))
 	}
 }
 
