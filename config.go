@@ -158,4 +158,6 @@ type ConfigPG struct {
 	ReturnUrl            string `mapstructure:"return_url"`
 	PrivateKeyFileToSign string `mapstructure:"private_key_file_to_sign"`
 	TradeRequestHtmlFile string `mapstructure:"trade_request_html_file"`
+	AllowedPayMethods    string `mapstructure:"allowed_pay_methods"`
+	ShopName             string `mapstructure:"shop_name"`
 }
