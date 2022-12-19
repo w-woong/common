@@ -1,31 +1,69 @@
 package adapter
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"io"
 	"net/http"
+	"time"
 
 	"github.com/MicahParks/keyfunc"
+	"github.com/allegro/bigcache/v3"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/w-woong/common"
 	"github.com/w-woong/common/dto"
 )
 
 type jwksIDTokenValidator struct {
+	cache              *bigcache.BigCache
 	jwksUrl            string
 	tokenSourceKey     string
 	tokenIdentifierKey string
 	idTokenKey         string
 }
 
-func NewJwksIDTokenValidator(jwksUrl string, tokenSourceKey, tokenIdentifierKey, idTokenKey string) *jwksIDTokenValidator {
+func NewJwksIDTokenValidator(jwksUrl string, tokenSourceKey, tokenIdentifierKey, idTokenKey string) (*jwksIDTokenValidator, error) {
+
+	config := bigcache.Config{
+		// number of shards (must be a power of 2)
+		Shards: 1024,
+
+		// time after which entry can be evicted
+		LifeWindow: 10 * time.Minute,
+
+		// Interval between removing expired entries (clean up).
+		// If set to <= 0 then no action is performed.
+		// Setting to < 1 second is counterproductive — bigcache has a one second resolution.
+		CleanWindow: 5 * time.Minute,
+
+		// rps * lifeWindow, used only in initial memory allocation
+		MaxEntriesInWindow: 1000 * 10 * 60,
+
+		// max entry size in bytes, used only in initial memory allocation
+		MaxEntrySize: 500,
+
+		// prints information about additional memory allocation
+		Verbose: false,
+
+		// cache will not allocate more memory than this limit, value in MB
+		// if value is reached then the oldest entries can be overridden for the new ones
+		// 0 value means no size limit
+		HardMaxCacheSize: 1024,
+	}
+	// cache, _ := bigcache.New(context.Background(), bigcache.DefaultConfig(10*time.Minute))
+	cache, err := bigcache.New(context.Background(), config)
+	if err != nil {
+		return nil, err
+	}
+
 	return &jwksIDTokenValidator{
+		cache:              cache,
 		jwksUrl:            jwksUrl,
 		tokenSourceKey:     tokenSourceKey,
 		tokenIdentifierKey: tokenIdentifierKey,
 		idTokenKey:         idTokenKey,
-	}
+	}, nil
 }
 
 func (u *jwksIDTokenValidator) TokenSourceKey() string {
@@ -45,10 +83,21 @@ func (u *jwksIDTokenValidator) Validate(idToken string) (*jwt.Token, *dto.IDToke
 		return nil, nil, common.ErrIDTokenNotFound
 	}
 
-	jwksJson, err := GetJwks(u.jwksUrl)
+	jwksJson, err := u.cache.Get("jwks")
 	if err != nil {
-		return nil, nil, err
+		jwksJson, err = GetJwks(u.jwksUrl)
+		if err != nil {
+			return nil, nil, err
+		}
+		if err = u.cache.Set("jwks", jwksJson); err != nil {
+			return nil, nil, err
+		}
 	}
+
+	// jwksJson, err := GetJwks(u.jwksUrl)
+	// if err != nil {
+	// 	return nil, nil, err
+	// }
 
 	// Create the JWKS from the resource at the given URL.
 	jwks, err := keyfunc.NewJSON(jwksJson)
