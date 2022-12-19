@@ -94,15 +94,9 @@ func (u *jwksIDTokenValidator) Validate(idToken string) (*jwt.Token, *dto.IDToke
 		}
 	}
 
-	// jwksJson, err := GetJwks(u.jwksUrl)
-	// if err != nil {
-	// 	return nil, nil, err
-	// }
-
 	// Create the JWKS from the resource at the given URL.
 	jwks, err := keyfunc.NewJSON(jwksJson)
 	if err != nil {
-		// log.Fatalf("Failed to create JWKS from resource at the given URL.\nError: %s", err.Error())
 		return nil, nil, err
 	}
 
