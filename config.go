@@ -90,6 +90,8 @@ type ConfigClient struct {
 
 	UserHttp ConfigHttpClient `mapstructure:"user_http"`
 	UserGrpc ConfigGrpcClient `mapstructure:"user_grpc"`
+
+	Payment ConfigPayment `mapstructure:"payment"`
 }
 
 type ConfigGrpcClient struct {
@@ -138,4 +140,22 @@ type ConfigAuthRequest struct {
 	ResponseUrl string `mapstructure:"response_url"`
 	AuthUrl     string `mapstructure:"auth_url"`
 	Wait        int    `mapstructure:"wait"`
+}
+
+// ConfigPayment is a config for woong specific
+type ConfigPayment struct {
+	// pg client(kcp, nice...)
+	PgType string `mapstructure:"pg_type"`
+	// mobile, pc
+	ClientType string   `mapstructure:"client_type"`
+	PG         ConfigPG `mapstructure:"pg"`
+}
+
+type ConfigPG struct {
+	Url                  string `mapstructure:"url"`
+	ClientID             string `mapstructure:"client_id"`
+	RawCertificate       string `mapstructure:"raw_certificate"`
+	ReturnUrl            string `mapstructure:"return_url"`
+	PrivateKeyFileToSign string `mapstructure:"private_key_file_to_sign"`
+	TradeRequestHtmlFile string `mapstructure:"trade_request_html_file"`
 }

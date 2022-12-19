@@ -51,6 +51,16 @@ server:
 
 
 client:
+  payment:
+    pg_type: 'kcp'
+    client_type: 'mobile'
+    pg:
+      url: ''
+      client_id: ''
+      raw_certificate: ''
+      return_url: ''
+      private_key_file_to_sign: ''
+      trade_request_html_file: ''
   event_http:
     url: 'http://localhost:49004'
     hmac_secret: 'asdf'
