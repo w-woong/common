@@ -61,6 +61,8 @@ client:
       return_url: ''
       private_key_file_to_sign: ''
       trade_request_html_file: ''
+      allowed_pay_methods: ''
+      shop_name: ''
   event_http:
     url: 'http://localhost:49004'
     hmac_secret: 'asdf'
