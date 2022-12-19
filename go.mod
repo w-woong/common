@@ -8,6 +8,7 @@ require (
 	github.com/go-wonk/si v0.2.12
 	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/golang/mock v1.4.4
+	github.com/gorilla/mux v1.8.0
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/viper v1.13.0
