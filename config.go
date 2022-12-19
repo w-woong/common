@@ -43,6 +43,7 @@ type ConfigRepo struct {
 	MaxIdleConns           int    `mapstructure:"max_idle_conns"`
 	MaxOpenConns           int    `mapstructure:"max_open_conns"`
 	ConnMaxLifetimeMinutes int    `mapstructure:"conn_max_lifetime_in_min"`
+	LogLevel               string `mapstructure:"log_level"`
 }
 
 type ConfigGrpc struct {
