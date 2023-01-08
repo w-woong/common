@@ -6,6 +6,8 @@ type Config struct {
 	Server ConfigServer `mapstructure:"server"`
 	Client ConfigClient `mapstructure:"client"`
 	Logger ConfigLogger `mapstructure:"logger"`
+
+	Partner ConfigPartner `mapstructure:"partner"`
 }
 
 func (c *Config) String() string {
@@ -160,4 +162,13 @@ type ConfigPG struct {
 	TradeRequestHtmlFile string `mapstructure:"trade_request_html_file"`
 	AllowedPayMethods    string `mapstructure:"allowed_pay_methods"`
 	ShopName             string `mapstructure:"shop_name"`
+}
+
+type ConfigPartner struct {
+	Address ConfigAddress `mapstructure:"address"`
+}
+
+type ConfigAddress struct {
+	Type     string `mapstructure:"type"`
+	HtmlFile string `mapstructure:"html_file"`
 }
