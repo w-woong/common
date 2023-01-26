@@ -11,8 +11,8 @@ func ToEmailDtoFromProto(input *pb.Email) (dto.Email, error) {
 		return dto.Email{}, nil
 	}
 
-	createdAt := input.GetCreatedAt().AsTime().Local()
-	updatedAt := input.GetUpdatedAt().AsTime().Local()
+	createdAt := utils.TimestampPbAsTimeNow(input.GetCreatedAt()).Local()
+	updatedAt := utils.TimestampPbAsTimeNow(input.GetUpdatedAt()).Local()
 	output := dto.Email{
 		ID:        input.GetId(),
 		CreatedAt: &createdAt,
@@ -47,8 +47,8 @@ func ToPersonalDtoFromProto(input *pb.Personal) (dto.Personal, error) {
 		return dto.Personal{}, nil
 	}
 
-	createdAt := input.GetCreatedAt().AsTime().Local()
-	updatedAt := input.GetUpdatedAt().AsTime().Local()
+	createdAt := utils.TimestampPbAsTimeNow(input.GetCreatedAt()).Local()
+	updatedAt := utils.TimestampPbAsTimeNow(input.GetUpdatedAt()).Local()
 	birthDate := input.GetBirthDate().AsTime().Local()
 	output := dto.Personal{
 		ID:          input.GetId(),
@@ -74,8 +74,8 @@ func ToPasswordDtoFromProto(input *pb.Password) (dto.Password, error) {
 		return dto.Password{}, nil
 	}
 
-	createdAt := input.GetCreatedAt().AsTime().Local()
-	updatedAt := input.GetUpdatedAt().AsTime().Local()
+	createdAt := utils.TimestampPbAsTimeNow(input.GetCreatedAt()).Local()
+	updatedAt := utils.TimestampPbAsTimeNow(input.GetUpdatedAt()).Local()
 	output := dto.Password{
 		ID:        input.GetId(),
 		CreatedAt: &createdAt,
@@ -92,8 +92,8 @@ func ToUserDtoFromProto(input *pb.User) (dto.User, error) {
 		return dto.User{}, nil
 	}
 
-	createdAt := input.GetCreatedAt().AsTime().Local()
-	updatedAt := input.GetUpdatedAt().AsTime().Local()
+	createdAt := utils.TimestampPbAsTimeNow(input.GetCreatedAt()).Local()
+	updatedAt := utils.TimestampPbAsTimeNow(input.GetUpdatedAt()).Local()
 	password, err := ToPasswordDtoFromProto(input.GetPassword())
 	if err != nil {
 		return dto.User{}, err

@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/w-woong/common/conv"
 	"github.com/w-woong/common/dto"
+	pb "github.com/w-woong/common/dto/protos/user/v1"
 )
 
 func Test_User_ToPasswordProtoFromDto(t *testing.T) {
@@ -21,4 +22,9 @@ func Test_User_ToEmailDtoFromProto(t *testing.T) {
 	d, err := conv.ToEmailDtoFromProto(nil)
 	assert.Nil(t, err)
 	fmt.Println(d)
+}
+
+func Test_User_ToUserDtoFromProto(t *testing.T) {
+	user := pb.User{}
+	fmt.Println(user.GetCreatedAt().AsTime())
 }

@@ -13,3 +13,10 @@ func NewTimestampPB(t *time.Time) *timestamppb.Timestamp {
 
 	return timestamppb.New(*t)
 }
+
+func TimestampPbAsTimeNow(val *timestamppb.Timestamp) time.Time {
+	if val == nil {
+		return time.Now()
+	}
+	return val.AsTime()
+}
