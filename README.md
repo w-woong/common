@@ -18,6 +18,10 @@ kill `ps -ef | grep '\-\-autoMigrate' | grep -v 'grep' | awk '{print $2}'`
 ```
 
 ```bash
+DOMAIN_NAME=woong
+cd $WOONG_HOME/$DOMAIN_NAME/cmd/http
+nohup go run $WOONG_HOME/$DOMAIN_NAME/cmd/http/main.go --autoMigrate >> $WOONG_HOME/$DOMAIN_NAME/cmd/http/logs/agent.log 2>&1 &
+
 DOMAIN_NAME=auth
 cd ${WOONG_HOME}/${DOMAIN_NAME}/cmd
 nohup go run ${WOONG_HOME}/${DOMAIN_NAME}/cmd/main.go --autoMigrate >> ${WOONG_HOME}/${DOMAIN_NAME}/cmd/logs/agent.log 2>&1 &
@@ -45,8 +49,5 @@ DOMAIN_NAME=partner
 cd $WOONG_HOME/$DOMAIN_NAME/cmd/http
 nohup go run $WOONG_HOME/$DOMAIN_NAME/cmd/http/main.go --autoMigrate >> $WOONG_HOME/$DOMAIN_NAME/cmd/http/logs/agent.log 2>&1 &
 
-DOMAIN_NAME=woong
-cd $WOONG_HOME/$DOMAIN_NAME/cmd/http
-nohup go run $WOONG_HOME/$DOMAIN_NAME/cmd/http/main.go --autoMigrate >> $WOONG_HOME/$DOMAIN_NAME/cmd/http/logs/agent.log 2>&1 &
 
 ```
