@@ -49,5 +49,9 @@ DOMAIN_NAME=partner
 cd $WOONG_HOME/$DOMAIN_NAME/cmd/http
 nohup go run $WOONG_HOME/$DOMAIN_NAME/cmd/http/main.go --autoMigrate >> $WOONG_HOME/$DOMAIN_NAME/cmd/http/logs/agent.log 2>&1 &
 
+DOMAIN_NAME=resource
+cd $WOONG_HOME/$DOMAIN_NAME/cmd/http
+nohup go run $WOONG_HOME/$DOMAIN_NAME/cmd/http/main.go --autoMigrate >> $WOONG_HOME/$DOMAIN_NAME/cmd/http/logs/agent.log 2>&1 &
+
 
 ```
