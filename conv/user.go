@@ -69,19 +69,148 @@ func ToPersonalDtoFromProto(input *pb.Personal) (dto.Personal, error) {
 	return output, nil
 }
 
-func ToPasswordDtoFromProto(input *pb.Password) (dto.Password, error) {
+func ToCredentialPasswordDtoFromProto(input *pb.CredentialPassword) (dto.CredentialPassword, error) {
 	if input == nil {
-		return dto.Password{}, nil
+		return dto.CredentialPassword{}, nil
 	}
 
 	createdAt := utils.TimestampPbAsTimeNow(input.GetCreatedAt()).Local()
 	updatedAt := utils.TimestampPbAsTimeNow(input.GetUpdatedAt()).Local()
-	output := dto.Password{
+	output := dto.CredentialPassword{
 		ID:        input.GetId(),
 		CreatedAt: &createdAt,
 		UpdatedAt: &updatedAt,
 		UserID:    input.GetUserID(),
 		Value:     input.GetValue(),
+	}
+
+	return output, nil
+}
+
+func ToCredentialTokenDtoFromProto(input *pb.CredentialToken) (dto.CredentialToken, error) {
+	if input == nil {
+		return dto.CredentialToken{}, nil
+	}
+
+	createdAt := utils.TimestampPbAsTimeNow(input.GetCreatedAt()).Local()
+	updatedAt := utils.TimestampPbAsTimeNow(input.GetUpdatedAt()).Local()
+	output := dto.CredentialToken{
+		ID:        input.GetId(),
+		CreatedAt: &createdAt,
+		UpdatedAt: &updatedAt,
+		UserID:    input.GetUserID(),
+		Value:     input.GetValue(),
+	}
+
+	return output, nil
+}
+
+func ToDeliveryRequestTypeDtoFromProto(input *pb.DeliveryRequestType) (dto.DeliveryRequestType, error) {
+	if input == nil {
+		return dto.DeliveryRequestType{}, nil
+	}
+
+	createdAt := utils.TimestampPbAsTimeNow(input.GetCreatedAt()).Local()
+	updatedAt := utils.TimestampPbAsTimeNow(input.GetUpdatedAt()).Local()
+	output := dto.DeliveryRequestType{
+		ID:        input.GetId(),
+		CreatedAt: &createdAt,
+		UpdatedAt: &updatedAt,
+		Name:      input.GetName(),
+	}
+
+	return output, nil
+}
+
+func ToDeliveryRequestDtoFromProto(input *pb.DeliveryRequest) (dto.DeliveryRequest, error) {
+	if input == nil {
+		return dto.DeliveryRequest{}, nil
+	}
+
+	createdAt := utils.TimestampPbAsTimeNow(input.GetCreatedAt()).Local()
+	updatedAt := utils.TimestampPbAsTimeNow(input.GetUpdatedAt()).Local()
+	deliveryRequestType, err := ToDeliveryRequestTypeDtoFromProto(input.GetDeliveryRequestType())
+	if err != nil {
+		return dto.NilDeliveryRequest, err
+	}
+	output := dto.DeliveryRequest{
+		ID:                    input.GetId(),
+		CreatedAt:             &createdAt,
+		UpdatedAt:             &updatedAt,
+		DeliveryAddressID:     input.GetDeliveryAddressID(),
+		DeliveryRequestTypeID: input.GetDeliveryRequestTypeID(),
+		DeliveryRequestType:   deliveryRequestType,
+		RequestMessage:        input.GetRequestMessage(),
+	}
+
+	return output, nil
+}
+
+func ToDeliveryAddressDtoFromProto(input *pb.DeliveryAddress) (dto.DeliveryAddress, error) {
+	if input == nil {
+		return dto.DeliveryAddress{}, nil
+	}
+
+	createdAt := utils.TimestampPbAsTimeNow(input.GetCreatedAt()).Local()
+	updatedAt := utils.TimestampPbAsTimeNow(input.GetUpdatedAt()).Local()
+	deliveryRequest, err := ToDeliveryRequestDtoFromProto(input.GetDeliveryRequest())
+	if err != nil {
+		return dto.NilDeliveryAddress, err
+	}
+	output := dto.DeliveryAddress{
+		ID:              input.GetId(),
+		CreatedAt:       &createdAt,
+		UpdatedAt:       &updatedAt,
+		UserID:          input.GetUserID(),
+		IsDefault:       input.GetIsDefault(),
+		ReceiverName:    input.GetReceiverName(),
+		ReceiverContact: input.ReceiverContact,
+		PostCode:        input.PostCode,
+		Address:         input.Address,
+		AddressDetail:   input.AddressDetail,
+		DeliveryRequest: deliveryRequest,
+	}
+
+	return output, nil
+}
+
+func ToPaymentTypeDtoFromProto(input *pb.PaymentType) (dto.PaymentType, error) {
+	if input == nil {
+		return dto.PaymentType{}, nil
+	}
+
+	createdAt := utils.TimestampPbAsTimeNow(input.GetCreatedAt()).Local()
+	updatedAt := utils.TimestampPbAsTimeNow(input.GetUpdatedAt()).Local()
+	output := dto.PaymentType{
+		ID:        input.GetId(),
+		CreatedAt: &createdAt,
+		UpdatedAt: &updatedAt,
+		Name:      input.GetName(),
+	}
+
+	return output, nil
+}
+
+func ToPaymentMethodDtoFromProto(input *pb.PaymentMethod) (dto.PaymentMethod, error) {
+	if input == nil {
+		return dto.PaymentMethod{}, nil
+	}
+
+	createdAt := utils.TimestampPbAsTimeNow(input.GetCreatedAt()).Local()
+	updatedAt := utils.TimestampPbAsTimeNow(input.GetUpdatedAt()).Local()
+	paymentType, err := ToPaymentTypeDtoFromProto(input.GetPaymentType())
+	if err != nil {
+		return dto.NilPaymentMethod, err
+	}
+	output := dto.PaymentMethod{
+		ID:            input.GetId(),
+		CreatedAt:     &createdAt,
+		UpdatedAt:     &updatedAt,
+		UserID:        input.GetUserID(),
+		PaymentTypeID: input.GetPaymentTypeID(),
+		PaymentType:   paymentType,
+		Identity:      input.GetIdentity(),
+		Option:        input.GetOption(),
 	}
 
 	return output, nil
@@ -94,17 +223,30 @@ func ToUserDtoFromProto(input *pb.User) (dto.User, error) {
 
 	createdAt := utils.TimestampPbAsTimeNow(input.GetCreatedAt()).Local()
 	updatedAt := utils.TimestampPbAsTimeNow(input.GetUpdatedAt()).Local()
-	password, err := ToPasswordDtoFromProto(input.GetPassword())
+	credentialPassword, err := ToCredentialPasswordDtoFromProto(input.GetCredentialPassword())
 	if err != nil {
-		return dto.User{}, err
+		return dto.NilUser, err
+	}
+	credentialToken, err := ToCredentialTokenDtoFromProto(input.GetCredentialToken())
+	if err != nil {
+		return dto.NilUser, err
 	}
 	personal, err := ToPersonalDtoFromProto(input.GetPersonal())
 	if err != nil {
-		return dto.User{}, err
+		return dto.NilUser, err
 	}
 	emails, err := ToEmailListDtoFromProto(input.GetEmails())
 	if err != nil {
-		return dto.User{}, err
+		return dto.NilUser, err
+	}
+
+	deliveryAddress, err := ToDeliveryAddressDtoFromProto(input.GetDeliveryAddress())
+	if err != nil {
+		return dto.NilUser, err
+	}
+	paymentMethod, err := ToPaymentMethodDtoFromProto(input.GetPaymentMethod())
+	if err != nil {
+		return dto.NilUser, err
 	}
 
 	output := dto.User{
@@ -115,9 +257,12 @@ func ToUserDtoFromProto(input *pb.User) (dto.User, error) {
 		LoginType:   input.GetLoginType(),
 		LoginSource: input.GetLoginSource(),
 
-		Password: password,
-		Personal: personal,
-		Emails:   emails,
+		CredentialPassword: credentialPassword,
+		CredentialToken:    credentialToken,
+		Personal:           personal,
+		Emails:             emails,
+		DeliveryAddress:    deliveryAddress,
+		PaymentMethod:      paymentMethod,
 	}
 
 	return output, nil
@@ -175,9 +320,21 @@ func ToPersonalProtoFromDto(input dto.Personal) (*pb.Personal, error) {
 	return &output, nil
 }
 
-func ToPasswordProtoFromDto(input dto.Password) (*pb.Password, error) {
+func ToCredentialPasswordProtoFromDto(input dto.CredentialPassword) (*pb.CredentialPassword, error) {
 
-	output := pb.Password{
+	output := pb.CredentialPassword{
+		Id:        input.ID,
+		CreatedAt: utils.NewTimestampPB(input.CreatedAt),
+		UpdatedAt: utils.NewTimestampPB(input.UpdatedAt),
+		UserID:    input.UserID,
+		Value:     input.Value,
+	}
+
+	return &output, nil
+}
+func ToCredentialTokenProtoFromDto(input dto.CredentialToken) (*pb.CredentialToken, error) {
+
+	output := pb.CredentialToken{
 		Id:        input.ID,
 		CreatedAt: utils.NewTimestampPB(input.CreatedAt),
 		UpdatedAt: utils.NewTimestampPB(input.UpdatedAt),
@@ -188,21 +345,129 @@ func ToPasswordProtoFromDto(input dto.Password) (*pb.Password, error) {
 	return &output, nil
 }
 
-func ToUserProtoFromDto(input dto.User) (*pb.User, error) {
-	password, _ := ToPasswordProtoFromDto(input.Password)
-	personal, _ := ToPersonalProtoFromDto(input.Personal)
-	emails, _ := ToEmailListProtoFromdto(input.Emails)
+func ToDeliveryRequestTypeProtoFromDto(input dto.DeliveryRequestType) (*pb.DeliveryRequestType, error) {
 
+	output := pb.DeliveryRequestType{
+		Id:        input.ID,
+		CreatedAt: utils.NewTimestampPB(input.CreatedAt),
+		UpdatedAt: utils.NewTimestampPB(input.UpdatedAt),
+		Name:      input.Name,
+	}
+
+	return &output, nil
+}
+
+func ToDeliveryRequestProtoFromDto(input dto.DeliveryRequest) (*pb.DeliveryRequest, error) {
+
+	deliveryRequestType, err := ToDeliveryRequestTypeProtoFromDto(input.DeliveryRequestType)
+	if err != nil {
+		return nil, err
+	}
+	output := pb.DeliveryRequest{
+		Id:                    input.ID,
+		CreatedAt:             utils.NewTimestampPB(input.CreatedAt),
+		UpdatedAt:             utils.NewTimestampPB(input.UpdatedAt),
+		DeliveryAddressID:     input.DeliveryAddressID,
+		DeliveryRequestTypeID: input.DeliveryRequestTypeID,
+		DeliveryRequestType:   deliveryRequestType,
+		RequestMessage:        input.RequestMessage,
+	}
+
+	return &output, nil
+}
+
+func ToDeliveryAddressProtoFromDto(input dto.DeliveryAddress) (*pb.DeliveryAddress, error) {
+
+	deliveryRequest, err := ToDeliveryRequestProtoFromDto(input.DeliveryRequest)
+	if err != nil {
+		return nil, err
+	}
+	output := pb.DeliveryAddress{
+		Id:              input.ID,
+		CreatedAt:       utils.NewTimestampPB(input.CreatedAt),
+		UpdatedAt:       utils.NewTimestampPB(input.UpdatedAt),
+		UserID:          input.UserID,
+		IsDefault:       input.IsDefault,
+		ReceiverName:    input.ReceiverName,
+		ReceiverContact: input.ReceiverContact,
+		PostCode:        input.PostCode,
+		Address:         input.Address,
+		AddressDetail:   input.AddressDetail,
+		DeliveryRequest: deliveryRequest,
+	}
+
+	return &output, nil
+}
+
+func ToPaymentTypeProtoFromDto(input dto.PaymentType) (*pb.PaymentType, error) {
+
+	output := pb.PaymentType{
+		Id:        input.ID,
+		CreatedAt: utils.NewTimestampPB(input.CreatedAt),
+		UpdatedAt: utils.NewTimestampPB(input.UpdatedAt),
+		Name:      input.Name,
+	}
+
+	return &output, nil
+}
+
+func ToPaymentMethodProtoFromDto(input dto.PaymentMethod) (*pb.PaymentMethod, error) {
+	paymentType, err := ToPaymentTypeProtoFromDto(input.PaymentType)
+	if err != nil {
+		return nil, err
+	}
+	output := pb.PaymentMethod{
+		Id:            input.ID,
+		CreatedAt:     utils.NewTimestampPB(input.CreatedAt),
+		UpdatedAt:     utils.NewTimestampPB(input.UpdatedAt),
+		UserID:        input.UserID,
+		PaymentTypeID: input.PaymentTypeID,
+		PaymentType:   paymentType,
+		Identity:      input.Identity,
+		Option:        input.Option,
+	}
+
+	return &output, nil
+}
+
+func ToUserProtoFromDto(input dto.User) (*pb.User, error) {
+	password, err := ToCredentialPasswordProtoFromDto(input.CredentialPassword)
+	if err != nil {
+		return nil, err
+	}
+	token, err := ToCredentialTokenProtoFromDto(input.CredentialToken)
+	if err != nil {
+		return nil, err
+	}
+	personal, err := ToPersonalProtoFromDto(input.Personal)
+	if err != nil {
+		return nil, err
+	}
+	emails, err := ToEmailListProtoFromdto(input.Emails)
+	if err != nil {
+		return nil, err
+	}
+	deliveryAddress, err := ToDeliveryAddressProtoFromDto(input.DeliveryAddress)
+	if err != nil {
+		return nil, err
+	}
+	paymentMethod, err := ToPaymentMethodProtoFromDto(input.PaymentMethod)
+	if err != nil {
+		return nil, err
+	}
 	output := pb.User{
-		Id:          input.ID,
-		CreatedAt:   utils.NewTimestampPB(input.CreatedAt),
-		UpdatedAt:   utils.NewTimestampPB(input.UpdatedAt),
-		LogindID:    input.LoginID,
-		LoginType:   input.LoginType,
-		LoginSource: input.LoginSource,
-		Password:    password,
-		Personal:    personal,
-		Emails:      emails,
+		Id:                 input.ID,
+		CreatedAt:          utils.NewTimestampPB(input.CreatedAt),
+		UpdatedAt:          utils.NewTimestampPB(input.UpdatedAt),
+		LogindID:           input.LoginID,
+		LoginType:          input.LoginType,
+		LoginSource:        input.LoginSource,
+		CredentialPassword: password,
+		CredentialToken:    token,
+		Personal:           personal,
+		Emails:             emails,
+		DeliveryAddress:    deliveryAddress,
+		PaymentMethod:      paymentMethod,
 	}
 
 	return &output, nil

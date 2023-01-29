@@ -11,8 +11,8 @@ import (
 )
 
 func Test_User_ToPasswordProtoFromDto(t *testing.T) {
-	userDto := dto.Password{}
-	p, err := conv.ToPasswordProtoFromDto(userDto)
+	userDto := dto.CredentialPassword{}
+	p, err := conv.ToCredentialPasswordProtoFromDto(userDto)
 	assert.Nil(t, err)
 	assert.NotNil(t, p)
 }
