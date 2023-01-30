@@ -99,3 +99,52 @@ cd $WOONG_HOME/$DOMAIN_NAME
 git fetch origin main:main
 
 ```
+
+## Drop tables
+### woong DB
+```sql
+drop table home_group_products;
+drop table short_notices;
+drop table main_promotions;
+drop table homes;
+drop table app_configs;
+drop table tags;
+```
+
+### woong_auth db
+```sql
+drop table auth_requests;
+drop table auth_states;
+drop table tokens;
+```
+
+### woong_order
+```sql
+drop table cart_products;
+drop table carts;
+```
+
+### woong_product
+```sql
+drop table group_products;
+drop table groups;
+drop table products;
+```
+
+```sql
+delete from group_products;
+delete from groups;
+delete from products;
+```
+
+### woong_user
+```sql
+drop table emails;
+drop table passwords;
+drop table personals;
+drop table users;
+```
+### woong_partner
+```sql
+
+```
