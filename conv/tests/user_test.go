@@ -12,7 +12,7 @@ import (
 
 func Test_User_ToPasswordProtoFromDto(t *testing.T) {
 	userDto := dto.CredentialPassword{}
-	p, err := conv.ToCredentialPasswordProtoFromDto(userDto)
+	p, err := conv.ToCredentialPasswordProtoFromDto(&userDto)
 	assert.Nil(t, err)
 	assert.NotNil(t, p)
 }
@@ -27,4 +27,11 @@ func Test_User_ToEmailDtoFromProto(t *testing.T) {
 func Test_User_ToUserDtoFromProto(t *testing.T) {
 	user := pb.User{}
 	fmt.Println(user.GetCreatedAt().AsTime())
+}
+
+func Test_User_ToCredentialPasswordProtoFromDto(t *testing.T) {
+	user := dto.User{}
+	c, err := conv.ToCredentialPasswordProtoFromDto(user.CredentialPassword)
+	assert.Nil(t, err)
+	fmt.Println(c.String())
 }

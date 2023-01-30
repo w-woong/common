@@ -16,12 +16,12 @@ type User struct {
 	LoginType   string `json:"login_type"`
 	LoginSource string `json:"login_source"`
 
-	CredentialPassword CredentialPassword `json:"password"`
-	CredentialToken    CredentialToken    `json:"token"`
-	Personal           Personal           `json:"personal"`
-	Emails             Emails             `json:"emails"`
-	DeliveryAddress    DeliveryAddress    `json:"delivery_address"`
-	PaymentMethod      PaymentMethod      `json:"payment_method"`
+	CredentialPassword *CredentialPassword `json:"password,omitempty"`
+	CredentialToken    *CredentialToken    `json:"token,omitempty"`
+	Personal           *Personal           `json:"personal,omitempty"`
+	Emails             Emails              `json:"emails,omitempty"`
+	DeliveryAddress    *DeliveryAddress    `json:"delivery_address,omitempty"`
+	PaymentMethod      *PaymentMethod      `json:"payment_method,omitempty"`
 }
 
 func (d *User) String() string {
