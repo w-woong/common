@@ -11,12 +11,12 @@ var (
 	userDto = dto.User{
 		ID:      "22bcbf79-ca5f-42dc-8ca0-29441209a36a",
 		LoginID: "wonk",
-		CredentialPassword: dto.CredentialPassword{
+		CredentialPassword: &dto.CredentialPassword{
 			ID:     "333cbf79-ca5f-42dc-8ca0-29441209a36a",
 			UserID: "22bcbf79-ca5f-42dc-8ca0-29441209a36a",
 			Value:  "asdfasdfasdf",
 		},
-		Personal: dto.Personal{
+		Personal: &dto.Personal{
 			ID:          "433cbf79-ca5f-42dc-8ca0-29441209a36a",
 			UserID:      "22bcbf79-ca5f-42dc-8ca0-29441209a36a",
 			FirstName:   "wonk",

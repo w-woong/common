@@ -24,6 +24,12 @@ func Test_userHttp_RegisterUser(t *testing.T) {
 		LoginID:     "asdf",
 		LoginType:   "token",
 		LoginSource: "google",
+		Emails: dto.Emails{
+			dto.Email{
+				Email:    "test@test.test",
+				Priority: 0,
+			},
+		},
 	})
 
 	assert.Nil(t, err)

@@ -257,12 +257,12 @@ func ToUserDtoFromProto(input *pb.User) (dto.User, error) {
 		LoginType:   input.GetLoginType(),
 		LoginSource: input.GetLoginSource(),
 
-		CredentialPassword: credentialPassword,
-		CredentialToken:    credentialToken,
-		Personal:           personal,
+		CredentialPassword: &credentialPassword,
+		CredentialToken:    &credentialToken,
+		Personal:           &personal,
 		Emails:             emails,
-		DeliveryAddress:    deliveryAddress,
-		PaymentMethod:      paymentMethod,
+		DeliveryAddress:    &deliveryAddress,
+		PaymentMethod:      &paymentMethod,
 	}
 
 	return output, nil
@@ -299,8 +299,10 @@ func ToEmailListProtoFromdto(input dto.Emails) ([]*pb.Email, error) {
 	return output, nil
 }
 
-func ToPersonalProtoFromDto(input dto.Personal) (*pb.Personal, error) {
-
+func ToPersonalProtoFromDto(input *dto.Personal) (*pb.Personal, error) {
+	if input == nil {
+		return nil, nil
+	}
 	output := pb.Personal{
 		Id:          input.ID,
 		CreatedAt:   utils.NewTimestampPB(input.CreatedAt),
@@ -320,8 +322,10 @@ func ToPersonalProtoFromDto(input dto.Personal) (*pb.Personal, error) {
 	return &output, nil
 }
 
-func ToCredentialPasswordProtoFromDto(input dto.CredentialPassword) (*pb.CredentialPassword, error) {
-
+func ToCredentialPasswordProtoFromDto(input *dto.CredentialPassword) (*pb.CredentialPassword, error) {
+	if input == nil {
+		return nil, nil
+	}
 	output := pb.CredentialPassword{
 		Id:        input.ID,
 		CreatedAt: utils.NewTimestampPB(input.CreatedAt),
@@ -332,8 +336,10 @@ func ToCredentialPasswordProtoFromDto(input dto.CredentialPassword) (*pb.Credent
 
 	return &output, nil
 }
-func ToCredentialTokenProtoFromDto(input dto.CredentialToken) (*pb.CredentialToken, error) {
-
+func ToCredentialTokenProtoFromDto(input *dto.CredentialToken) (*pb.CredentialToken, error) {
+	if input == nil {
+		return nil, nil
+	}
 	output := pb.CredentialToken{
 		Id:        input.ID,
 		CreatedAt: utils.NewTimestampPB(input.CreatedAt),
@@ -376,8 +382,10 @@ func ToDeliveryRequestProtoFromDto(input dto.DeliveryRequest) (*pb.DeliveryReque
 	return &output, nil
 }
 
-func ToDeliveryAddressProtoFromDto(input dto.DeliveryAddress) (*pb.DeliveryAddress, error) {
-
+func ToDeliveryAddressProtoFromDto(input *dto.DeliveryAddress) (*pb.DeliveryAddress, error) {
+	if input == nil {
+		return nil, nil
+	}
 	deliveryRequest, err := ToDeliveryRequestProtoFromDto(input.DeliveryRequest)
 	if err != nil {
 		return nil, err
@@ -411,7 +419,11 @@ func ToPaymentTypeProtoFromDto(input dto.PaymentType) (*pb.PaymentType, error) {
 	return &output, nil
 }
 
-func ToPaymentMethodProtoFromDto(input dto.PaymentMethod) (*pb.PaymentMethod, error) {
+func ToPaymentMethodProtoFromDto(input *dto.PaymentMethod) (*pb.PaymentMethod, error) {
+	if input == nil {
+		return nil, nil
+	}
+
 	paymentType, err := ToPaymentTypeProtoFromDto(input.PaymentType)
 	if err != nil {
 		return nil, err
