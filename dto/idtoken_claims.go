@@ -19,4 +19,5 @@ type IDTokenClaims struct {
 	FamilyName    string `json:"family_name"`
 	GivenName     string `json:"given_name"`
 	Name          string `json:"name"`
+	TokenSource   string `json:"token_source"`
 }
