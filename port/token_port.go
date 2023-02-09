@@ -19,3 +19,9 @@ type IDTokenValidator interface {
 	IDTokenKey() string
 	Validate(idToken string) (*jwt.Token, *dto.IDTokenClaims, error)
 }
+
+type IDTokenParsers map[string]IDTokenValidator
+
+type IDTokenParser interface {
+	ParseWithClaims(idToken string, claims jwt.Claims) (*jwt.Token, error)
+}

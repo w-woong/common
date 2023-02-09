@@ -40,5 +40,5 @@ func (u *RS256SignedJWT) GenerateToken(claims jwt.Claims) (string, error) {
 	return utils.GenerateRS256SignedJWT(u.kid, u.privateKey, claims)
 }
 func (u *RS256SignedJWT) ParseWithClaims(token string, claims jwt.Claims) (*jwt.Token, error) {
-	return utils.ParseRS256SignedJWT(token, claims, u.jwks)
+	return utils.ParseJWTWithClaimsJwks(token, claims, u.jwks)
 }
