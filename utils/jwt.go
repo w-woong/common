@@ -72,6 +72,9 @@ func GenerateRS256SignedJWT(kid string, key *rsa.PrivateKey, claims jwt.Claims) 
 }
 
 func ParseJWTWithClaimsJwks(token string, claims jwt.Claims, jwksBytes []byte) (*jwt.Token, error) {
+	if token == "" {
+		return nil, errors.New("token is empty")
+	}
 	jwks, err := keyfunc.NewJSON(jwksBytes)
 	if err != nil {
 		return nil, err
