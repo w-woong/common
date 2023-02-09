@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/w-woong/common"
 	"github.com/w-woong/common/configs"
 )
 
@@ -43,4 +44,14 @@ func TestReadConfigInto(t *testing.T) {
 	err := configs.ReadConfigInto("./tests/config.yml", &conf)
 	assert.Nil(t, err)
 	fmt.Println(conf.String())
+}
+
+func TestConfig(t *testing.T) {
+	conf := common.Config{}
+	err := configs.ReadConfigInto("./tests/config.yml", &conf)
+	assert.Nil(t, err)
+	fmt.Println(conf.String())
+	for k, v := range conf.Client.OAuth2 {
+		fmt.Println(k, v)
+	}
 }

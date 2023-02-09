@@ -96,3 +96,78 @@ client:
     ca_cert_pem: './certs/server.crt'
     cert_server_name: 'localhost'
     dial_block: true
+
+client:
+  oauth2:
+    google:
+      client_id: ''
+      client_secret: ''
+      redirect_url: 'https://localhost:5558/v1/auth/callback/{token_source}'
+      scopes:
+        - 'openid'
+        - 'https://www.googleapis.com/auth/userinfo.email'
+        - 'https://www.googleapis.com/auth/userinfo.profile'
+      auth_url: 'https://accounts.google.com/o/oauth2/auth'
+      token_url: 'https://oauth2.googleapis.com/token'
+      openid_conf_url: 'https://accounts.google.com/.well-known/openid-configuration'
+      id_token_cookie: 'id_token'
+      authrequest:
+        # direct address
+        response_url: 'https://localhost:5558/v1/auth/request/{token_source}/{auth_request_id}'
+        auth_url: 'https://localhost:5558/v1/auth/authorize/{token_source}/{auth_request_id}'
+        wait: 300
+    kakao:
+      client_id: ''
+      client_secret: ''
+      redirect_url: 'https://localhost:5558/v1/auth/callback/{token_source}'
+      scopes:
+        - 'openid'
+        - 'https://www.googleapis.com/auth/userinfo.email'
+        - 'https://www.googleapis.com/auth/userinfo.profile'
+      auth_url: 'https://accounts.google.com/o/oauth2/auth'
+      token_url: 'https://oauth2.googleapis.com/token'
+      openid_conf_url: 'https://accounts.google.com/.well-known/openid-configuration'
+      id_token_cookie: 'id_token'
+      authrequest:
+        # direct address
+        response_url: 'https://localhost:5558/v1/auth/request/{token_source}/{auth_request_id}'
+        auth_url: 'https://localhost:5558/v1/auth/authorize/{token_source}/{auth_request_id}'
+        wait: 300
+
+
+    # token:
+    #   source: 'google'
+    #   id_key_name: 'tid'
+    #   id_token_key_name: 'id_token'
+    #   token_source_key_name: 'token_source'
+    # client_id: ''
+    # client_secret: ''
+    # redirect_url: 'https://localhost:5558/v1/auth/callback/{token_source}'
+    # scopes:
+    #   - 'openid'
+    #   - 'https://www.googleapis.com/auth/userinfo.email'
+    #   - 'https://www.googleapis.com/auth/userinfo.profile'
+    # auth_url: 'https://accounts.google.com/o/oauth2/auth'
+    # token_url: 'https://oauth2.googleapis.com/token'
+    # openid_conf_url: 'https://accounts.google.com/.well-known/openid-configuration'
+
+    # authrequest:
+    #   response_url: 'https://localhost:5558/v1/auth/request/{token_source}/{auth_request_id}'
+    #   auth_url: 'https://localhost:5558/v1/auth/authorize/{token_source}/{auth_request_id}'
+    #   wait: 300
+
+    # id_token_validators:
+    #   - type: 'jwks'
+    #     token:
+    #       source: 'google'
+    #       id_key_name: 'tid'
+    #       id_token_key_name: 'id_token'
+    #       token_source_key_name: 'token_source'
+    #     openid_conf_url: 'https://accounts.google.com/.well-known/openid-configuration'
+    #   - type: 'jwks'
+    #     token:
+    #       source: 'woong'
+    #       id_key_name: 'tid'
+    #       id_token_key_name: 'id_token'
+    #       token_source_key_name: 'token_source'
+    #     openid_conf_url: 'https://accounts.google.com/.well-known/openid-configuration'
