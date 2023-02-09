@@ -71,7 +71,7 @@ func GenerateRS256SignedJWT(kid string, key *rsa.PrivateKey, claims jwt.Claims) 
 	return jwtToken.SignedString(key)
 }
 
-func ParseRS256SignedJWT(token string, claims jwt.Claims, jwksBytes []byte) (*jwt.Token, error) {
+func ParseJWTWithClaimsJwks(token string, claims jwt.Claims, jwksBytes []byte) (*jwt.Token, error) {
 	jwks, err := keyfunc.NewJSON(jwksBytes)
 	if err != nil {
 		return nil, err

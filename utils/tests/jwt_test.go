@@ -42,7 +42,7 @@ func Test_GenerateRS256SignedJWT(t *testing.T) {
 
 	jwks, err := utils.RSAPublicKeyToJwks([]string{"jwk_public_key.pem"}, []string{"myid"})
 	assert.Nil(t, err)
-	jwtToken, err := utils.ParseRS256SignedJWT(token, &OpenIDClaims{}, jwks)
+	jwtToken, err := utils.ParseJWTWithClaimsJwks(token, &OpenIDClaims{}, jwks)
 	assert.Nil(t, err)
 	outClaims, ok := jwtToken.Claims.(*OpenIDClaims)
 	assert.Equal(t, true, ok)
