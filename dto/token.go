@@ -24,3 +24,9 @@ func (d *Token) HideSensitive() *Token {
 	d.TokenType = ""
 	return d
 }
+
+func (d Token) IDTokenOnly() *Token {
+	return &Token{
+		IDToken: d.IDToken,
+	}
+}

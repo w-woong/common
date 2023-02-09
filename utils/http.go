@@ -23,3 +23,9 @@ func AuthBearer(r *http.Request) string {
 
 	return authVal[1]
 }
+
+func SetNoCache(w http.ResponseWriter) {
+	w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate;")
+	w.Header().Set("pragma", "no-cache")
+	w.Header().Set("X-Content-Type-Options", "nosniff")
+}
