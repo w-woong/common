@@ -10,7 +10,10 @@ import (
 	"github.com/go-wonk/si/sihttp"
 	"github.com/w-woong/common"
 	"github.com/w-woong/common/dto"
+	"github.com/w-woong/common/port"
 )
+
+var _ port.UserSvc = (*userHttp)(nil)
 
 type userHttp struct {
 	client  *sihttp.Client
