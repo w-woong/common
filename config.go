@@ -126,6 +126,7 @@ type OAuth2Config struct {
 	OpenIDConfUrl string            `mapstructure:"openid_conf_url"`
 	IDTokenCookie string            `mapstructure:"id_token_cookie"`
 	AuthRequest   ConfigAuthRequest `mapstructure:"authrequest"`
+	RegisterUser  bool              `mapstructure:"register_user"`
 }
 
 // Deprecated
