@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/w-woong/common/conv"
 	"github.com/w-woong/common/dto"
-	pb "github.com/w-woong/common/dto/protos/user/v1"
+	pb "github.com/w-woong/common/dto/protos/user/v2"
 )
 
 func Test_User_ToPasswordProtoFromDto(t *testing.T) {

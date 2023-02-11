@@ -8,5 +8,5 @@ import (
 
 type UserSvc interface {
 	RegisterUser(ctx context.Context, user dto.User) (dto.User, error)
-	FindByLoginID(ctx context.Context, loginSource, tokenIdentifier, idToken string) (dto.User, error)
+	FindByIDToken(ctx context.Context, idToken string) (dto.User, error)
 }
