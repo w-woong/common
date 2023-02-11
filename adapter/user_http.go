@@ -13,33 +13,24 @@ import (
 )
 
 type userHttp struct {
-	client             *sihttp.Client
-	baseUrl            string
-	host               string
-	bearerToken        string
-	tokenSourceKey     string
-	tokenIdentifierKey string
-	idTokenKey         string
+	client  *sihttp.Client
+	baseUrl string
+	host    string
 }
 
-func NewUserHttp(client *http.Client, baseUrl string, bearerToken string,
-	tokenSourceKey, tokenIdentifierKey, idTokenKey string) *userHttp {
+func NewUserHttp(client *http.Client, baseUrl string) *userHttp {
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json; charset=utf-8"
 
 	c := sihttp.NewClient(client, sihttp.WithBaseUrl(baseUrl),
-		sihttp.WithRequestOpt(sihttp.WithBearerToken(bearerToken)),
+		// sihttp.WithRequestOpt(sihttp.WithBearerToken(bearerToken)),
 		sihttp.WithWriterOpt(sicore.SetJsonEncoder()),
 		sihttp.WithReaderOpt(sicore.SetJsonDecoder()),
 		sihttp.WithDefaultHeaders(headers))
 
 	a := &userHttp{
-		client:             c,
-		baseUrl:            baseUrl,
-		bearerToken:        bearerToken,
-		tokenSourceKey:     tokenSourceKey,
-		tokenIdentifierKey: tokenIdentifierKey,
-		idTokenKey:         idTokenKey,
+		client:  c,
+		baseUrl: baseUrl,
 	}
 	if u, err := url.Parse(baseUrl); err == nil {
 		a.host = u.Host
@@ -75,16 +66,14 @@ func (a *userHttp) RegisterUser(ctx context.Context, user dto.User) (dto.User, e
 	return resUser, nil
 }
 
-func (a *userHttp) FindByLoginID(ctx context.Context, loginSource, tokenIdentifier, idToken string) (dto.User, error) {
+func (a *userHttp) FindByIDToken(ctx context.Context, idToken string) (dto.User, error) {
 
 	resUser := dto.User{}
 	res := common.HttpBody{
 		Document: &resUser,
 	}
 	header := make(http.Header)
-	header[a.tokenSourceKey] = []string{loginSource}
-	header[a.tokenIdentifierKey] = []string{tokenIdentifier}
-	header[a.idTokenKey] = []string{idToken}
+	header["Authorization"] = []string{"Bearer " + idToken}
 	err := a.client.RequestGetDecodeContext(ctx, "/v1/user/account", header, nil, &res)
 	if err != nil {
 		if se, ok := err.(*sihttp.SiHttpError); ok {
