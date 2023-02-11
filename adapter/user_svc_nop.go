@@ -4,7 +4,10 @@ import (
 	"context"
 
 	"github.com/w-woong/common/dto"
+	"github.com/w-woong/common/port"
 )
+
+var _ port.UserSvc = (*UserSvcNop)(nil)
 
 type UserSvcNop struct {
 }
@@ -16,6 +19,6 @@ func (UserSvcNop) RegisterUser(ctx context.Context, user dto.User) (dto.User, er
 	return dto.NilUser, nil
 }
 
-func (UserSvcNop) FindByLoginID(ctx context.Context, loginSource, tokenIdentifier, idToken string) (dto.User, error) {
+func (UserSvcNop) FindByIDToken(ctx context.Context, idToken string) (dto.User, error) {
 	return dto.NilUser, nil
 }
