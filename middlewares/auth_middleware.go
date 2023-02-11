@@ -43,7 +43,7 @@ func AuthIDToken(next http.HandlerFunc, cookie port.TokenCookie, parser port.IDT
 			logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
 			return
 		}
-		ctx = context.WithValue(ctx, dto.IDTokenClaimsKey{}, *claims)
+		ctx = context.WithValue(ctx, dto.IDTokenClaimsContextKey{}, *claims)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	}
 }
@@ -84,8 +84,8 @@ func AuthIDTokenUserAccountSvc(next http.HandlerFunc, cookie port.TokenCookie, p
 			logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
 			return
 		}
-		ctx = context.WithValue(ctx, dto.IDTokenClaimsKey{}, *claims)
-		ctx = context.WithValue(ctx, dto.UserAccountKey{}, userAccount)
+		ctx = context.WithValue(ctx, dto.IDTokenClaimsContextKey{}, *claims)
+		ctx = context.WithValue(ctx, dto.UserAccountContextKey{}, userAccount)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	}
 }
@@ -116,7 +116,7 @@ func AuthIDTokenGrpc(parser port.IDTokenParser) grpc.UnaryServerInterceptor {
 			if !ok {
 				return nil, status.Error(codes.Code(common.StatusInvalidTokenClaims), common.ErrTokenInvalidClaims.Error())
 			}
-			ctx = context.WithValue(ctx, dto.IDTokenClaimsKey{}, *claims)
+			ctx = context.WithValue(ctx, dto.IDTokenClaimsContextKey{}, *claims)
 			return handler(ctx, req)
 		default:
 			return nil, common.ErrIDTokenNotFound
@@ -151,8 +151,8 @@ func AuthIDTokenUserAccountGrpc(parser port.IDTokenParser, userSvc port.UserSvc)
 			if err != nil {
 				return nil, err
 			}
-			ctx = context.WithValue(ctx, dto.IDTokenClaimsKey{}, *claims)
-			ctx = context.WithValue(ctx, dto.UserAccountKey{}, userAccount)
+			ctx = context.WithValue(ctx, dto.IDTokenClaimsContextKey{}, *claims)
+			ctx = context.WithValue(ctx, dto.UserAccountContextKey{}, userAccount)
 			return handler(ctx, req)
 		default:
 			return nil, common.ErrIDTokenNotFound
