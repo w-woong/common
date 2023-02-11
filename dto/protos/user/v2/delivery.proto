@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+option go_package = "github.com/common/dto/protos/user/v2";
+
+import "google/protobuf/timestamp.proto";
+// import "google/protobuf/any.proto";
+
+
+message DeliveryRequestType {
+    string id = 1;
+    google.protobuf.Timestamp createdAt = 2;
+    google.protobuf.Timestamp updatedAt = 3;
+    string name = 4;
+}
+
+message DeliveryRequest {
+    string id = 1;
+    google.protobuf.Timestamp createdAt = 2;
+    google.protobuf.Timestamp updatedAt = 3;
+    string deliveryAddressID = 4;
+    string deliveryRequestTypeID = 5;
+    DeliveryRequestType deliveryRequestType = 6;
+    string RequestMessage = 7;
+}
+
+message DeliveryAddress {
+    string id = 1;
+    google.protobuf.Timestamp createdAt = 2;
+    google.protobuf.Timestamp updatedAt = 3;
+    string userID = 4;
+    bool isDefault = 5;
+    string receiverName = 6;
+    string receiverContact = 7;
+    string postCode = 8;
+    string address = 9;
+    string addressDetail = 10;
+    DeliveryRequest deliveryRequest = 11;
+}

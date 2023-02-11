@@ -2,6 +2,7 @@ package port
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/w-woong/common/dto"
@@ -24,4 +25,9 @@ type IDTokenParsers map[string]IDTokenValidator
 
 type IDTokenParser interface {
 	ParseWithClaims(idToken string, claims jwt.Claims) (*jwt.Token, error)
+}
+
+type TokenCookie interface {
+	GetIDToken(r *http.Request) string
+	SetIDToken(w http.ResponseWriter, idToken string)
 }

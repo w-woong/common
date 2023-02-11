@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+option go_package = "github.com/common/dto/protos/user/v2";
+
+import "google/protobuf/timestamp.proto";
+// import "google/protobuf/any.proto";
+import "password.proto";
+import "email.proto";
+import "personal.proto";
+import "delivery.proto";
+import "payment.proto";
+
+// The response message containing the greetings
+message User {
+    string id = 1;
+    google.protobuf.Timestamp createdAt = 2;
+    google.protobuf.Timestamp updatedAt = 3;
+    string logindID = 4;
+    string loginType = 5;
+    string loginSource = 6;
+    CredentialPassword credentialPassword = 7;
+    CredentialToken credentialToken = 8;
+    Personal personal = 9;
+    repeated Email emails = 10;
+    DeliveryAddress deliveryAddress = 11;
+    PaymentMethod paymentMethod = 12;
+}

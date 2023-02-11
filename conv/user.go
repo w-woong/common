@@ -2,7 +2,7 @@ package conv
 
 import (
 	"github.com/w-woong/common/dto"
-	pb "github.com/w-woong/common/dto/protos/user/v1"
+	pb "github.com/w-woong/common/dto/protos/user/v2"
 	"github.com/w-woong/common/utils"
 )
 

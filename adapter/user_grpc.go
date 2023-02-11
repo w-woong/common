@@ -8,10 +8,13 @@ import (
 	"github.com/w-woong/common"
 	"github.com/w-woong/common/conv"
 	"github.com/w-woong/common/dto"
-	pb "github.com/w-woong/common/dto/protos/user/v1"
+	pb "github.com/w-woong/common/dto/protos/user/v2"
+	"github.com/w-woong/common/port"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/status"
 )
+
+var _ port.UserSvc = (*userGrpc)(nil)
 
 type userGrpc struct {
 	client pb.UserServiceClient
@@ -50,11 +53,9 @@ func (a *userGrpc) RegisterUser(ctx context.Context, user dto.User) (dto.User, e
 	return conv.ToUserDtoFromProto(reply.Document)
 }
 
-func (a *userGrpc) FindByLoginID(ctx context.Context, loginSource, tokenIdentifier, idToken string) (dto.User, error) {
-	reply, err := a.client.FindByLoginID(ctx, &pb.FindByLoginIDRequest{
-		Tid:         tokenIdentifier,
-		TokenSource: loginSource,
-		IdToken:     idToken,
+func (a *userGrpc) FindByIDToken(ctx context.Context, idToken string) (dto.User, error) {
+	reply, err := a.client.FindByIDToken(ctx, &pb.FindByIDTokenRequest{
+		IdToken: idToken,
 	})
 	if err != nil {
 		if s, ok := status.FromError(err); ok {

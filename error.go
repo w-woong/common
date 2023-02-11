@@ -32,5 +32,6 @@ var (
 )
 
 var (
-	StatusTryRefreshIDToken = 1000
+	StatusTryRefreshIDToken  = 1000
+	StatusInvalidTokenClaims = 1001
 )
