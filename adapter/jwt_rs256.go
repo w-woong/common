@@ -36,9 +36,14 @@ func NewRS256SignedJWT(currentKid string, privateKeyFileName string,
 	}, nil
 }
 
+func (u *RS256SignedJWT) Jwks() []byte {
+	return u.jwks
+}
+
 func (u *RS256SignedJWT) GenerateToken(claims jwt.Claims) (string, error) {
 	return utils.GenerateRS256SignedJWT(u.kid, u.privateKey, claims)
 }
+
 func (u *RS256SignedJWT) ParseWithClaims(token string, claims jwt.Claims) (*jwt.Token, error) {
 	return utils.ParseJWTWithClaimsJwks(token, claims, u.jwks)
 }
