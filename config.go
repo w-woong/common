@@ -87,9 +87,10 @@ type ConfigFile struct {
 
 type ConfigClient struct {
 	// Oauth2 ConfigOauth2            `mapstructure:"oauth2"`
-	OAuth2 map[string]OAuth2Config `mapstructure:"oauth2"`
-	Http   ConfigHttpClient        `mapstructure:"http"`
-	Grpc   ConfigGrpcClient        `mapstructure:"grpc"`
+	IDTokenCookie string                  `mapstructure:"id_token_cookie"`
+	OAuth2        map[string]OAuth2Config `mapstructure:"oauth2"`
+	Http          ConfigHttpClient        `mapstructure:"http"`
+	Grpc          ConfigGrpcClient        `mapstructure:"grpc"`
 
 	UserHttp ConfigHttpClient `mapstructure:"user_http"`
 	UserGrpc ConfigGrpcClient `mapstructure:"user_grpc"`
@@ -124,7 +125,6 @@ type OAuth2Config struct {
 	AuthUrl       string            `mapstructure:"auth_url"`
 	TokenUrl      string            `mapstructure:"token_url"`
 	OpenIDConfUrl string            `mapstructure:"openid_conf_url"`
-	IDTokenCookie string            `mapstructure:"id_token_cookie"`
 	AuthRequest   ConfigAuthRequest `mapstructure:"authrequest"`
 	RegisterUser  bool              `mapstructure:"register_user"`
 }
