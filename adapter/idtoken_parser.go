@@ -29,3 +29,23 @@ func (u *jwksIDTokenParser) ParseWithClaims(idToken string, claims jwt.Claims) (
 
 	return utils.ParseJWTWithClaimsJwks(idToken, &dto.IDTokenClaims{}, jwksJson)
 }
+
+type rs256SignedIDTokenParser struct {
+	jwks []byte
+}
+
+func NewRS256SignedIDTokenParser(publicKeyFileNames []string, kids []string) (*rs256SignedIDTokenParser, error) {
+
+	jwks, err := utils.RSAPublicKeyToJwks(publicKeyFileNames, kids)
+	if err != nil {
+		return nil, err
+	}
+
+	return &rs256SignedIDTokenParser{
+		jwks: jwks,
+	}, nil
+}
+
+func (u *rs256SignedIDTokenParser) ParseWithClaims(idToken string, claims jwt.Claims) (*jwt.Token, error) {
+	return utils.ParseJWTWithClaimsJwks(idToken, claims, u.jwks)
+}
