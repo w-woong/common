@@ -49,6 +49,16 @@ server:
     max_open_conns: 15
     conn_max_lifetime_in_min: 15
 
+  security:
+    jwks:
+      private_kid: 'c1632d92-b111-42e0-ac2b-94e4a8798dde'
+      private_key_path: 'jwks/jwk_private_key.pem'
+      public_kids:
+        - 'c1632d92-b111-42e0-ac2b-94e4a8798dde'
+      public_key_paths:
+        - 'jwks/jwk_public_key.pem'
+
+
 
 client:
   payment:
