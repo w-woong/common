@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/allegro/bigcache/v3"
+	"github.com/go-wonk/si/sihttp"
 )
 
 type JwksGetter interface {
@@ -120,7 +121,8 @@ func GetJwksUrl(openIDConfUrl string) (string, error) {
 }
 
 func GetOpenIDConfig(openIDConfUrl string) (map[string]interface{}, error) {
-	res, err := http.Get(openIDConfUrl)
+	client := sihttp.DefaultInsecureClient()
+	res, err := client.Get(openIDConfUrl)
 	if err != nil {
 		return nil, err
 	}
