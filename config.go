@@ -19,6 +19,8 @@ type ConfigServer struct {
 	Http ConfigHttp `mapstructure:"http"`
 	Repo ConfigRepo `mapstructure:"repo"`
 	Grpc ConfigGrpc `mapstructure:"grpc"`
+
+	Security SecurityConfig `mapstructure:"security"`
 }
 
 type ConfigHttp struct {
@@ -53,6 +55,10 @@ type ConfigGrpc struct {
 	HealthCheck       bool                    `mapstructure:"healthcheck"`
 	EnforcementPolicy ConfigEnforcementPolicy `mapstructure:"enforcement_policy"`
 	KeepAlive         ConfigKeepAlive         `mapstructure:"keep_alive"`
+}
+
+type SecurityConfig struct {
+	Jwks JwksConfig `mapstructure:"jwks"`
 }
 
 type ConfigEnforcementPolicy struct {
@@ -130,10 +136,10 @@ type OAuth2Config struct {
 }
 
 type JwksConfig struct {
-	PrivateKid     string   `json:"private_kid"`
-	PrivateKeyPath string   `json:"private_key_path"`
-	PublicKids     []string `json:"public_kids"`
-	PublicKeyPaths []string `json:"public_key_paths"`
+	PrivateKid     string   `mapstructure:"private_kid"`
+	PrivateKeyPath string   `mapstructure:"private_key_path"`
+	PublicKids     []string `mapstructure:"public_kids"`
+	PublicKeyPaths []string `mapstructure:"public_key_paths"`
 }
 
 // Deprecated
