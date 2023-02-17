@@ -67,6 +67,31 @@ type OAuth2Error struct {
 	StatusCode       int    `json:"status_code"`
 }
 
+func OAuth2ErrorInvalidRequest(errorDescription string, statusCode int) *OAuth2Error {
+	return NewOAuth2Error("invalid_request", errorDescription, "", statusCode)
+}
+
+func OAuth2ErrorInvalidClient(errorDescription string, statusCode int) *OAuth2Error {
+	return NewOAuth2Error("invalid_client", errorDescription, "", statusCode)
+}
+func OAuth2ErrorInvalidGrant(errorDescription string, statusCode int) *OAuth2Error {
+	return NewOAuth2Error("invalid_grant", errorDescription, "", statusCode)
+}
+func OAuth2ErrorInvalidScope(errorDescription string, statusCode int) *OAuth2Error {
+	return NewOAuth2Error("invalid_scope", errorDescription, "", statusCode)
+}
+func OAuth2ErrorUnauthorizedClient(errorDescription string, statusCode int) *OAuth2Error {
+	return NewOAuth2Error("unauthorized_client", errorDescription, "", statusCode)
+}
+func OAuth2ErrorUnsupportedGrantType(errorDescription string, statusCode int) *OAuth2Error {
+	return NewOAuth2Error("unsupported_grant_type", errorDescription, "", statusCode)
+}
+
+// OAuth2ErrorRequestDenied when user denied request
+func OAuth2ErrorRequestDenied(errorDescription string, statusCode int) *OAuth2Error {
+	return NewOAuth2Error("request_denied", errorDescription, "", statusCode)
+}
+
 func NewOAuth2Error(errorTitle string, errorDescription string, errorHint string, statusCode int) *OAuth2Error {
 	return &OAuth2Error{
 		ErrorTitle:       errorTitle,
