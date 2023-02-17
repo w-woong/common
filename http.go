@@ -58,3 +58,33 @@ func (m *HttpBody) String() string {
 func (m *HttpBody) EncodeTo(w io.Writer) error {
 	return si.EncodeJson(w, m)
 }
+
+type OAuth2Error struct {
+	ErrorTitle       string `json:"error"`
+	ErrorDebug       string `json:"error_debug,omitempty"`
+	ErrorDescription string `json:"error_description"`
+	ErrorHint        string `json:"error_hint,omitempty"`
+	StatusCode       int    `json:"status_code"`
+}
+
+func NewOAuth2Error(errorTitle string, errorDescription string, errorHint string, statusCode int) *OAuth2Error {
+	return &OAuth2Error{
+		ErrorTitle:       errorTitle,
+		ErrorDescription: errorDescription,
+		ErrorHint:        errorHint,
+		StatusCode:       statusCode,
+	}
+}
+
+func (m *OAuth2Error) String() string {
+	b, _ := json.Marshal(m)
+	return string(b)
+}
+
+func (m *OAuth2Error) EncodeTo(w io.Writer) error {
+	return si.EncodeJson(w, m)
+}
+
+func (m *OAuth2Error) Error() string {
+	return m.String()
+}
