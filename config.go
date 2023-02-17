@@ -129,6 +129,13 @@ type OAuth2Config struct {
 	RegisterUser  bool              `mapstructure:"register_user"`
 }
 
+type JwksConfig struct {
+	PrivateKid     string   `json:"private_kid"`
+	PrivateKeyPath string   `json:"private_key_path"`
+	PublicKids     []string `json:"public_kids"`
+	PublicKeyPaths []string `json:"public_key_paths"`
+}
+
 // Deprecated
 // ConfigOauth2
 // type ConfigOauth2 struct {
