@@ -14,7 +14,15 @@ import (
 	"github.com/go-wonk/si/sihttp"
 	"github.com/w-woong/common"
 	"github.com/w-woong/common/logger"
+	"github.com/w-woong/common/utils"
 )
+
+func NoCache(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		utils.SetNoCache(w)
+		next.ServeHTTP(w, r)
+	}
+}
 
 // AuthHMACHandler to verify the request
 func AuthHMACHandler(next http.HandlerFunc, hmacHeader string, hmacKey []byte) http.HandlerFunc {
