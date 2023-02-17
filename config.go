@@ -1,6 +1,10 @@
 package common
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/w-woong/common/dto"
+)
 
 type Config struct {
 	Server ConfigServer `mapstructure:"server"`
@@ -58,7 +62,8 @@ type ConfigGrpc struct {
 }
 
 type SecurityConfig struct {
-	Jwks JwksConfig `mapstructure:"jwks"`
+	Jwks                JwksConfig     `mapstructure:"jwks"`
+	OpenIDConfiguration dto.OpenIDConf `mapstructure:"openid_configuration"`
 }
 
 type ConfigEnforcementPolicy struct {
