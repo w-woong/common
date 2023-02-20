@@ -52,7 +52,7 @@ func (a *IDTokenHttp) Refresh(ctx context.Context, tokenSource, tokenIdentifier 
 	header[a.idTokenKey] = []string{idToken}
 
 	res := dto.Token{}
-	err := a.client.RequestGetDecodeContext(ctx, "/v1/auth/validate/"+tokenSource, header, nil, &res)
+	err := a.client.RequestGetDecodeContext(ctx, "/v1/oauth2/validate/"+tokenSource, header, nil, &res)
 	if err != nil {
 		return dto.NilToken, err
 	}

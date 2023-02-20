@@ -138,6 +138,8 @@ type OAuth2Config struct {
 	OpenIDConfUrl string            `mapstructure:"openid_conf_url"`
 	AuthRequest   ConfigAuthRequest `mapstructure:"authrequest"`
 	RegisterUser  bool              `mapstructure:"register_user"`
+
+	OpenIDConfiguration dto.OpenIDConf `mapstructure:"openid_configuration"`
 }
 
 type JwksConfig struct {
