@@ -112,7 +112,7 @@ client:
     google:
       client_id: ''
       client_secret: ''
-      redirect_url: 'https://localhost:5558/v1/auth/callback/{token_source}'
+      redirect_url: 'https://localhost:5558/v1/oauth2/callback/{token_source}'
       scopes:
         - 'openid'
         - 'https://www.googleapis.com/auth/userinfo.email'
@@ -123,13 +123,13 @@ client:
       id_token_cookie: 'id_token'
       authrequest:
         # direct address
-        response_url: 'https://localhost:5558/v1/auth/request/{token_source}/{auth_request_id}'
-        auth_url: 'https://localhost:5558/v1/auth/authorize/{token_source}/{auth_request_id}'
+        response_url: 'https://localhost:5558/v1/oauth2/request/{token_source}/{auth_request_id}'
+        auth_url: 'https://localhost:5558/v1/oauth2/authorize/{token_source}/{auth_request_id}'
         wait: 300
     kakao:
       client_id: ''
       client_secret: ''
-      redirect_url: 'https://localhost:5558/v1/auth/callback/{token_source}'
+      redirect_url: 'https://localhost:5558/v1/oauth2/callback/{token_source}'
       scopes:
         - 'openid'
         - 'https://www.googleapis.com/auth/userinfo.email'
@@ -140,8 +140,8 @@ client:
       id_token_cookie: 'id_token'
       authrequest:
         # direct address
-        response_url: 'https://localhost:5558/v1/auth/request/{token_source}/{auth_request_id}'
-        auth_url: 'https://localhost:5558/v1/auth/authorize/{token_source}/{auth_request_id}'
+        response_url: 'https://localhost:5558/v1/oauth2/request/{token_source}/{auth_request_id}'
+        auth_url: 'https://localhost:5558/v1/oauth2/authorize/{token_source}/{auth_request_id}'
         wait: 300
 
 
@@ -152,7 +152,7 @@ client:
     #   token_source_key_name: 'token_source'
     # client_id: ''
     # client_secret: ''
-    # redirect_url: 'https://localhost:5558/v1/auth/callback/{token_source}'
+    # redirect_url: 'https://localhost:5558/v1/oauth2/callback/{token_source}'
     # scopes:
     #   - 'openid'
     #   - 'https://www.googleapis.com/auth/userinfo.email'
@@ -162,8 +162,8 @@ client:
     # openid_conf_url: 'https://accounts.google.com/.well-known/openid-configuration'
 
     # authrequest:
-    #   response_url: 'https://localhost:5558/v1/auth/request/{token_source}/{auth_request_id}'
-    #   auth_url: 'https://localhost:5558/v1/auth/authorize/{token_source}/{auth_request_id}'
+    #   response_url: 'https://localhost:5558/v1/oauth2/request/{token_source}/{auth_request_id}'
+    #   auth_url: 'https://localhost:5558/v1/oauth2/authorize/{token_source}/{auth_request_id}'
     #   wait: 300
 
     # id_token_validators:
