@@ -15,9 +15,27 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// GetIDToken validates and refresh id_token. It first retrieves id_token from request, r.
+// GetIDTokenJwtAndClaims validates and refresh id_token. It first retrieves id_token from request, r.
 // Then, it parses the token to get the claims. It ignores ErrTokenExpired.
-func GetIDToken(next http.HandlerFunc, cookie port.TokenCookie, parser port.IDTokenParser) http.HandlerFunc {
+func GetIDToken(next http.HandlerFunc, cookie port.TokenCookie) http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		ctx := r.Context()
+		idToken := utils.AuthBearer(r)
+		if idToken == "" {
+			idToken = cookie.GetIDToken(r)
+		}
+
+		ctx = context.WithValue(ctx, dto.IDTokenContextKey{}, idToken)
+
+		next.ServeHTTP(w, r.WithContext(ctx))
+	}
+}
+
+// GetIDTokenJwtAndClaims validates and refresh id_token. It first retrieves id_token from request, r.
+// Then, it parses the token to get the claims. It ignores ErrTokenExpired.
+func GetIDTokenJwtAndClaims(next http.HandlerFunc, cookie port.TokenCookie, parser port.IDTokenParser) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 

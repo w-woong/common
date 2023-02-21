@@ -7,6 +7,7 @@ var (
 )
 
 type JwtTokenContextKey struct{}
+type IDTokenContextKey struct{}
 type IDTokenClaimsContextKey struct{}
 type UserAccountContextKey struct{}
 
