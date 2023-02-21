@@ -101,6 +101,34 @@ func AuthIDToken(next http.HandlerFunc, cookie port.TokenCookie, parser port.IDT
 	}
 }
 
+func AuthIDTokenIgnoreErr(next http.HandlerFunc, cookie port.TokenCookie, parser port.IDTokenParser) http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		ctx := r.Context()
+		idToken := utils.AuthBearer(r)
+		if idToken == "" {
+			idToken = cookie.GetIDToken(r)
+		}
+
+		jwtToken, _ := parser.ParseWithClaims(idToken, &dto.IDTokenClaims{})
+		if jwtToken == nil {
+			ctx = context.WithValue(ctx, dto.IDTokenClaimsContextKey{}, dto.IDTokenClaims{})
+			next.ServeHTTP(w, r.WithContext(ctx))
+			return
+		}
+
+		claims, ok := jwtToken.Claims.(*dto.IDTokenClaims)
+		if !ok || claims == nil {
+			ctx = context.WithValue(ctx, dto.IDTokenClaimsContextKey{}, dto.IDTokenClaims{})
+			next.ServeHTTP(w, r.WithContext(ctx))
+			return
+		}
+
+		ctx = context.WithValue(ctx, dto.IDTokenClaimsContextKey{}, *claims)
+		next.ServeHTTP(w, r.WithContext(ctx))
+	}
+}
 func AuthIDTokenUserAccountSvc(next http.HandlerFunc, cookie port.TokenCookie, parser port.IDTokenParser,
 	userSvc port.UserSvc) http.HandlerFunc {
 
