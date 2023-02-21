@@ -15,7 +15,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func GetIDToken(next http.HandlerFunc, cookie port.TokenCookie) http.HandlerFunc {
+func GetIDToken(next http.HandlerFunc, cookie port.TokenCookie, parser port.IDTokenParser) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
@@ -25,7 +25,29 @@ func GetIDToken(next http.HandlerFunc, cookie port.TokenCookie) http.HandlerFunc
 			idToken = cookie.GetIDToken(r)
 		}
 
-		ctx = context.WithValue(ctx, dto.IDTokenContextKey{}, idToken)
+		jwtToken, err := parser.ParseWithClaims(idToken, &dto.IDTokenClaims{})
+		if err != nil {
+			if errors.Is(err, common.ErrTokenExpired) {
+				common.HttpErrorWithBody(w, http.StatusUnauthorized,
+					common.NewHttpBody(http.StatusText(http.StatusUnauthorized), common.StatusTryRefreshIDToken))
+				logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
+				return
+			}
+			common.HttpError(w, http.StatusUnauthorized)
+			logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
+			return
+		}
+
+		claims, ok := jwtToken.Claims.(*dto.IDTokenClaims)
+		if !ok {
+			common.HttpError(w, http.StatusUnauthorized)
+			logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
+			return
+		}
+
+		ctx = context.WithValue(ctx, dto.IDTokenClaimsContextKey{}, *claims)
+		ctx = context.WithValue(ctx, dto.JwtTokenContextKey{}, *jwtToken)
+
 		next.ServeHTTP(w, r.WithContext(ctx))
 	}
 }
