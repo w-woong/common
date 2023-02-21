@@ -6,6 +6,7 @@ var (
 	NilIDTokenClaims = IDTokenClaims{}
 )
 
+type IDTokenContextKey struct{}
 type IDTokenClaimsContextKey struct{}
 type UserAccountContextKey struct{}
 
