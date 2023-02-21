@@ -15,6 +15,21 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+func GetIDToken(next http.HandlerFunc, cookie port.TokenCookie, parser port.IDTokenParser) http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		ctx := r.Context()
+		idToken := utils.AuthBearer(r)
+		if idToken == "" {
+			idToken = cookie.GetIDToken(r)
+		}
+
+		ctx = context.WithValue(ctx, dto.IDTokenContextKey{}, idToken)
+		next.ServeHTTP(w, r.WithContext(ctx))
+	}
+}
+
 func AuthIDToken(next http.HandlerFunc, cookie port.TokenCookie, parser port.IDTokenParser) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
