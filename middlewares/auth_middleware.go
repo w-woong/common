@@ -15,7 +15,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func GetIDToken(next http.HandlerFunc, cookie port.TokenCookie, parser port.IDTokenParser) http.HandlerFunc {
+func GetIDToken(next http.HandlerFunc, cookie port.TokenCookie) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
