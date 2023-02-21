@@ -15,6 +15,8 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// GetIDToken validates and refresh id_token. It first retrieves id_token from request, r.
+// Then, it parses the token to get the claims. It ignores ErrTokenExpired.
 func GetIDToken(next http.HandlerFunc, cookie port.TokenCookie, parser port.IDTokenParser) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -27,15 +29,11 @@ func GetIDToken(next http.HandlerFunc, cookie port.TokenCookie, parser port.IDTo
 
 		jwtToken, err := parser.ParseWithClaims(idToken, &dto.IDTokenClaims{})
 		if err != nil {
-			if errors.Is(err, common.ErrTokenExpired) {
-				common.HttpErrorWithBody(w, http.StatusUnauthorized,
-					common.NewHttpBody(http.StatusText(http.StatusUnauthorized), common.StatusTryRefreshIDToken))
+			if !errors.Is(err, common.ErrTokenExpired) {
+				common.HttpError(w, http.StatusUnauthorized)
 				logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
 				return
 			}
-			common.HttpError(w, http.StatusUnauthorized)
-			logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
-			return
 		}
 
 		claims, ok := jwtToken.Claims.(*dto.IDTokenClaims)
