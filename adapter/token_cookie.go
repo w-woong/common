@@ -8,17 +8,31 @@ import (
 type TokenCookie struct {
 	expireAfter   time.Duration
 	idTokenCookie string
+	mode          http.SameSite
+	domain        string
 }
 
 func NewTokenCookie(expireAfter time.Duration, idTokenCookie string) *TokenCookie {
+	return &TokenCookie{
+		expireAfter:   expireAfter,
+		idTokenCookie: idTokenCookie,
+		mode:          http.SameSiteLaxMode,
+		domain:        "",
+	}
+}
+
+func NewCookie(expireAfter time.Duration, mode http.SameSite,
+	idTokenCookie string, domain string) *TokenCookie {
 
 	return &TokenCookie{
 		expireAfter:   expireAfter,
 		idTokenCookie: idTokenCookie,
+		mode:          mode,
+		domain:        domain,
 	}
 }
 
-func set(w http.ResponseWriter, sameSiteMode http.SameSite, name, value string, expireAfter time.Duration, maxAge int) {
+func set(w http.ResponseWriter, sameSiteMode http.SameSite, name, value string, expireAfter time.Duration, maxAge int, domain string) {
 	cookie := http.Cookie{
 		Name:     name,
 		Value:    value,
@@ -28,6 +42,7 @@ func set(w http.ResponseWriter, sameSiteMode http.SameSite, name, value string, 
 		Expires:  time.Now().Add(expireAfter),
 		MaxAge:   maxAge,
 		Secure:   true,
+		Domain:   domain,
 	}
 	http.SetCookie(w, &cookie)
 }
@@ -45,5 +60,5 @@ func (a *TokenCookie) GetIDToken(r *http.Request) string {
 }
 
 func (a *TokenCookie) SetIDToken(w http.ResponseWriter, idToken string) {
-	set(w, http.SameSiteLaxMode, a.idTokenCookie, idToken, a.expireAfter, 0)
+	set(w, a.mode, a.idTokenCookie, idToken, a.expireAfter, 0, a.domain)
 }
