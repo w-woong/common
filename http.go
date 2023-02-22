@@ -65,6 +65,9 @@ type OAuth2Error struct {
 	ErrorDescription string `json:"error_description"`
 	ErrorHint        string `json:"error_hint,omitempty"`
 	StatusCode       int    `json:"status_code"`
+
+	TryRefresh        *bool `json:"try_refresh,omitempty"`
+	TryReauthenticate *bool `json:"try_reauthenticate,omitempty"`
 }
 
 func OAuth2ErrorInvalidRequest(errorDescription string, statusCode int) *OAuth2Error {
@@ -85,6 +88,26 @@ func OAuth2ErrorUnauthorizedClient(errorDescription string, statusCode int) *OAu
 }
 func OAuth2ErrorUnsupportedGrantType(errorDescription string, statusCode int) *OAuth2Error {
 	return NewOAuth2Error("unsupported_grant_type", errorDescription, "", statusCode)
+}
+func OAuth2ErrorTryRefresh(errorDescription string) *OAuth2Error {
+	val := true
+	return &OAuth2Error{
+		ErrorTitle:       "invalid_request",
+		ErrorDescription: errorDescription,
+		// ErrorHint:        errorHint,
+		StatusCode: http.StatusUnauthorized,
+		TryRefresh: &val,
+	}
+}
+func OAuth2ErrorTryReauthenticate(errorDescription string) *OAuth2Error {
+	val := true
+	return &OAuth2Error{
+		ErrorTitle:       "invalid_request",
+		ErrorDescription: errorDescription,
+		// ErrorHint:        errorHint,
+		StatusCode:        http.StatusUnauthorized,
+		TryReauthenticate: &val,
+	}
 }
 
 // OAuth2ErrorRequestDenied when user denied request
