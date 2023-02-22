@@ -48,16 +48,18 @@ func GetIDTokenJwtAndClaims(next http.HandlerFunc, cookie port.TokenCookie, pars
 		jwtToken, err := parser.ParseWithClaims(idToken, &dto.IDTokenClaims{})
 		if err != nil {
 			if !errors.Is(err, common.ErrTokenExpired) {
-				common.HttpError(w, http.StatusUnauthorized)
-				logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
+				oerr := common.OAuth2ErrorInvalidRequest(err.Error(), http.StatusUnauthorized)
+				http.Error(w, oerr.Error(), oerr.StatusCode)
+				logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 				return
 			}
 		}
 
 		claims, ok := jwtToken.Claims.(*dto.IDTokenClaims)
 		if !ok {
-			common.HttpError(w, http.StatusUnauthorized)
-			logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
+			oerr := common.OAuth2ErrorInvalidClaims()
+			http.Error(w, oerr.Error(), oerr.StatusCode)
+			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 			return
 		}
 
@@ -80,20 +82,27 @@ func AuthIDToken(next http.HandlerFunc, cookie port.TokenCookie, parser port.IDT
 		jwtToken, err := parser.ParseWithClaims(idToken, &dto.IDTokenClaims{})
 		if err != nil {
 			if errors.Is(err, common.ErrTokenExpired) {
-				common.HttpErrorWithBody(w, http.StatusUnauthorized,
-					common.NewHttpBody(http.StatusText(http.StatusUnauthorized), common.StatusTryRefreshIDToken))
-				logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
+				oerr := common.OAuth2ErrorTryRefresh(err.Error())
+				http.Error(w, oerr.Error(), oerr.StatusCode)
+				logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
+
+				// common.HttpErrorWithBody(w, http.StatusUnauthorized,
+				// 	common.NewHttpBody(http.StatusText(http.StatusUnauthorized), common.StatusTryRefreshIDToken))
+				// logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
 				return
 			}
-			common.HttpError(w, http.StatusUnauthorized)
-			logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
+
+			oerr := common.OAuth2ErrorInvalidRequest(err.Error(), http.StatusUnauthorized)
+			http.Error(w, oerr.Error(), oerr.StatusCode)
+			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 			return
 		}
 
 		claims, ok := jwtToken.Claims.(*dto.IDTokenClaims)
 		if !ok {
-			common.HttpError(w, http.StatusUnauthorized)
-			logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
+			oerr := common.OAuth2ErrorInvalidClaims()
+			http.Error(w, oerr.Error(), oerr.StatusCode)
+			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 			return
 		}
 		ctx = context.WithValue(ctx, dto.IDTokenClaimsContextKey{}, *claims)
@@ -142,27 +151,31 @@ func AuthIDTokenUserAccountSvc(next http.HandlerFunc, cookie port.TokenCookie, p
 		jwtToken, err := parser.ParseWithClaims(idToken, &dto.IDTokenClaims{})
 		if err != nil {
 			if errors.Is(err, common.ErrTokenExpired) {
-				common.HttpErrorWithBody(w, http.StatusUnauthorized,
-					common.NewHttpBody(http.StatusText(http.StatusUnauthorized), common.StatusTryRefreshIDToken))
-				logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
+				oerr := common.OAuth2ErrorTryRefresh(err.Error())
+				http.Error(w, oerr.Error(), oerr.StatusCode)
+				logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
+
 				return
 			}
-			common.HttpError(w, http.StatusUnauthorized)
-			logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
+			oerr := common.OAuth2ErrorInvalidRequest(err.Error(), http.StatusUnauthorized)
+			http.Error(w, oerr.Error(), oerr.StatusCode)
+			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 			return
 		}
 
 		claims, ok := jwtToken.Claims.(*dto.IDTokenClaims)
 		if !ok {
-			common.HttpError(w, http.StatusUnauthorized)
-			logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
+			oerr := common.OAuth2ErrorInvalidClaims()
+			http.Error(w, oerr.Error(), oerr.StatusCode)
+			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 			return
 		}
 
 		userAccount, err := userSvc.FindByIDToken(ctx, idToken)
 		if err != nil {
-			common.HttpError(w, http.StatusUnauthorized)
-			logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
+			oerr := common.OAuth2ErrorInvalidRequest(err.Error(), http.StatusUnauthorized)
+			http.Error(w, oerr.Error(), oerr.StatusCode)
+			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 			return
 		}
 		ctx = context.WithValue(ctx, dto.IDTokenClaimsContextKey{}, *claims)

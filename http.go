@@ -110,6 +110,10 @@ func OAuth2ErrorTryReauthenticate(errorDescription string) *OAuth2Error {
 	}
 }
 
+func OAuth2ErrorInvalidClaims() *OAuth2Error {
+	return NewOAuth2Error("invalid_request", ErrTokenInvalidClaims.Error(), "", http.StatusUnauthorized)
+}
+
 // OAuth2ErrorRequestDenied when user denied request
 func OAuth2ErrorRequestDenied(errorDescription string, statusCode int) *OAuth2Error {
 	return NewOAuth2Error("request_denied", errorDescription, "", statusCode)
