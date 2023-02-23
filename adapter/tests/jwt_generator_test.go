@@ -8,6 +8,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/stretchr/testify/assert"
 	"github.com/w-woong/common/adapter"
+	"github.com/w-woong/common/utils"
 )
 
 func Test_es256SignedJwtGenerator_GenerateToken(t *testing.T) {
@@ -15,7 +16,11 @@ func Test_es256SignedJwtGenerator_GenerateToken(t *testing.T) {
 		t.Skip("skipping online tests")
 	}
 
-	gen, err := adapter.NewES256SignedJwtGenerator("my_kid", "./private_key_es256.p8")
+	privateKey, err := utils.LoadPKCS8PrivateKey("./private_key_es256.p8")
+	if !assert.Nil(t, err) {
+		t.FailNow()
+	}
+	gen, err := adapter.NewES256SignedJwtGenerator("my_kid", privateKey)
 	if !assert.Nil(t, err) {
 		t.FailNow()
 	}
