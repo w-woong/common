@@ -150,7 +150,7 @@ type OAuth2DynamicClientSecret struct {
 	Audience       []string `mapstructure:"aud"`
 	KeyID          string   `mapstructure:"kid"`
 	Alg            string   `mapstructure:"alg"`
-	ExpiresIn      string   `mapstructure:"expires_in"` // in seconds
+	ExpiresIn      int      `mapstructure:"expires_in"` // in seconds
 }
 
 type JwksConfig struct {
