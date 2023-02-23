@@ -1,7 +1,9 @@
 package utils_test
 
 import (
+	"crypto/x509"
 	"encoding/json"
+	"encoding/pem"
 	"fmt"
 	"testing"
 	"time"
@@ -47,4 +49,75 @@ func Test_GenerateRS256SignedJWT(t *testing.T) {
 	outClaims, ok := jwtToken.Claims.(*OpenIDClaims)
 	assert.Equal(t, true, ok)
 	fmt.Println(outClaims)
+}
+
+func Test_GenerateES256SignedJWT(t *testing.T) {
+	signingKey := `-----BEGIN PRIVATE KEY-----
+MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQg+94fs23vSrhBIXNz
+OdeRb7+FJkIsVrnTSf7eIYKdf4mgCgYIKoZIzj0DAQehRANCAATyBS3eRgOJ53OQ
+LFhGSJw4aiqju7muVwoIWFxCcFJasRwyGcbs0C7vt3xKV/DRJvID4UljaI53wETq
+RxlkNCeV
+-----END PRIVATE KEY-----`
+	clientID := "my_client_id"
+	teamID := "my_team_id"
+	audience := []string{"https://appleid.apple.com"}
+	kid := "my_kid"
+	alg := "ES256"
+
+	block, _ := pem.Decode([]byte(signingKey))
+	// assert.Nil(t, err)
+	if !assert.NotNil(t, block) {
+		t.FailNow()
+	}
+
+	privKey, err := x509.ParsePKCS8PrivateKey(block.Bytes)
+	assert.Nil(t, err)
+
+	now := time.Now()
+	exp := now.Add(time.Minute * 5)
+	claims := &jwt.RegisteredClaims{
+		Issuer:    teamID,
+		IssuedAt:  jwt.NewNumericDate(time.Unix(now.Unix(), 0)),
+		ExpiresAt: jwt.NewNumericDate(time.Unix(exp.Unix(), 0)),
+		Audience:  audience,
+		Subject:   clientID,
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
+	token.Header["kid"] = kid
+	token.Header["alg"] = alg
+
+	signed, err := token.SignedString(privKey)
+	assert.Nil(t, err)
+	fmt.Println(signed)
+}
+
+func Test_GenerateES256SignedJWT_file(t *testing.T) {
+
+	clientID := "my_client_id"
+	teamID := "my_team_id"
+	audience := []string{"https://appleid.apple.com"}
+	kid := "my_kid"
+	// alg := "ES256"
+
+	privKey, err := utils.LoadPKCS8PrivateKey("./private_key_es256.p8")
+	if !assert.Nil(t, err) {
+		t.FailNow()
+	}
+
+	now := time.Now()
+	exp := now.Add(time.Minute * 5)
+	claims := &jwt.RegisteredClaims{
+		Issuer:    teamID,
+		IssuedAt:  jwt.NewNumericDate(time.Unix(now.Unix(), 0)),
+		ExpiresAt: jwt.NewNumericDate(time.Unix(exp.Unix(), 0)),
+		Audience:  audience,
+		Subject:   clientID,
+	}
+
+	signed, err := utils.GenerateES256SignedJWT(kid, privKey, claims)
+	if !assert.Nil(t, err) {
+		t.FailNow()
+	}
+	fmt.Println(signed)
 }

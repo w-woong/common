@@ -2,7 +2,9 @@ package utils
 
 import (
 	"crypto/rsa"
+	"crypto/x509"
 	"encoding/json"
+	"encoding/pem"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -38,6 +40,23 @@ func LoadRSAPublicKey(fileName string) (*rsa.PublicKey, error) {
 	return key, nil
 }
 
+func LoadPKCS8PrivateKey(fileName string) (any, error) {
+	signingKey, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		return nil, err
+	}
+	block, _ := pem.Decode(signingKey)
+	if block == nil {
+		return nil, fmt.Errorf("failure decoding %s", fileName)
+	}
+	privKey, err := x509.ParsePKCS8PrivateKey(block.Bytes)
+	if err != nil {
+		return nil, err
+	}
+	return privKey, nil
+
+}
+
 func RSAPublicKeyToJwks(fileNames []string, kids []string) ([]byte, error) {
 	keys := make([]jwk.RSAPublicKey, 0)
 	for i, fileName := range fileNames {
@@ -65,8 +84,13 @@ func RSAPublicKeyToJwks(fileNames []string, kids []string) ([]byte, error) {
 }
 
 func GenerateRS256SignedJWT(kid string, key *rsa.PrivateKey, claims jwt.Claims) (string, error) {
-
 	jwtToken := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
+	jwtToken.Header["kid"] = kid
+	return jwtToken.SignedString(key)
+}
+
+func GenerateES256SignedJWT(kid string, key any, claims jwt.Claims) (string, error) {
+	jwtToken := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
 	jwtToken.Header["kid"] = kid
 	return jwtToken.SignedString(key)
 }
