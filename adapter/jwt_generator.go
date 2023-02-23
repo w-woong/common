@@ -10,11 +10,11 @@ type es256SignedJwtGenerator struct {
 	privateKey any
 }
 
-func NewES256SignedJwtGenerator(kid string, privateKeyFileName string) (*es256SignedJwtGenerator, error) {
-	privateKey, err := utils.LoadPKCS8PrivateKey(privateKeyFileName)
-	if err != nil {
-		return nil, err
-	}
+func NewES256SignedJwtGenerator(kid string, privateKey any) (*es256SignedJwtGenerator, error) {
+	// privateKey, err := utils.LoadPKCS8PrivateKey(privateKeyFileName)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	return &es256SignedJwtGenerator{
 		kid:        kid,
