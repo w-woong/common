@@ -3,7 +3,6 @@ package adapter
 import (
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/w-woong/common"
-	"github.com/w-woong/common/dto"
 	"github.com/w-woong/common/utils"
 )
 
@@ -27,7 +26,7 @@ func (u *jwksIDTokenParser) ParseWithClaims(idToken string, claims jwt.Claims) (
 		return nil, err
 	}
 
-	return utils.ParseJWTWithClaimsJwks(idToken, &dto.IDTokenClaims{}, jwksJson)
+	return utils.ParseJWTWithClaimsJwks(idToken, claims, jwksJson)
 }
 
 type rs256SignedIDTokenParser struct {
