@@ -98,15 +98,28 @@ type ConfigFile struct {
 
 type ConfigClient struct {
 	// Oauth2 ConfigOauth2            `mapstructure:"oauth2"`
-	IDTokenCookie string                  `mapstructure:"id_token_cookie"`
-	OAuth2        map[string]OAuth2Config `mapstructure:"oauth2"`
-	Http          ConfigHttpClient        `mapstructure:"http"`
-	Grpc          ConfigGrpcClient        `mapstructure:"grpc"`
+	IDTokenCookie CookieConfig `mapstructure:"id_token_cookie"`
+
+	OAuth2 map[string]OAuth2Config `mapstructure:"oauth2"`
+	Http   ConfigHttpClient        `mapstructure:"http"`
+	Grpc   ConfigGrpcClient        `mapstructure:"grpc"`
 
 	UserHttp ConfigHttpClient `mapstructure:"user_http"`
 	UserGrpc ConfigGrpcClient `mapstructure:"user_grpc"`
 
 	Payment ConfigPayment `mapstructure:"payment"`
+}
+
+type CookieConfig struct {
+	Name     string `mapstructure:"name"`
+	Value    string `mapstructure:"value"`
+	HttpOnly bool   `mapstructure:"http_only"`
+	SameSite string `mapstructure:"same_site"`
+	Path     string `mapstructure:"path"`
+	Expires  int    `mapstructure:"expires"` // in seconds
+	MaxAge   int    `mapstructure:"max_age"`
+	Secure   bool   `mapstructure:"secure"`
+	Domain   string `mapstructure:"domain"`
 }
 
 type ConfigGrpcClient struct {
