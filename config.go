@@ -2,6 +2,7 @@ package common
 
 import (
 	"encoding/json"
+	"net/http"
 
 	"github.com/w-woong/common/dto"
 )
@@ -120,6 +121,19 @@ type CookieConfig struct {
 	MaxAge   int    `mapstructure:"max_age"`
 	Secure   bool   `mapstructure:"secure"`
 	Domain   string `mapstructure:"domain"`
+}
+
+func (c CookieConfig) SameSiteMode() http.SameSite {
+	switch c.SameSite {
+	case "strict":
+		return http.SameSiteStrictMode
+	case "lax":
+		return http.SameSiteLaxMode
+	case "none":
+		return http.SameSiteNoneMode
+	default:
+		return http.SameSiteDefaultMode
+	}
 }
 
 type ConfigGrpcClient struct {
