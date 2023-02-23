@@ -129,17 +129,28 @@ type ConfigHttpClient struct {
 
 // OAuth2 client's configs
 type OAuth2Config struct {
-	ClientID      string            `mapstructure:"client_id"`
-	ClientSecret  string            `mapstructure:"client_secret"`
-	RedirectUrl   string            `mapstructure:"redirect_url"`
-	Scopes        []string          `mapstructure:"scopes"`
-	AuthUrl       string            `mapstructure:"auth_url"`
-	TokenUrl      string            `mapstructure:"token_url"`
-	OpenIDConfUrl string            `mapstructure:"openid_conf_url"`
-	AuthRequest   ConfigAuthRequest `mapstructure:"authrequest"`
-	RegisterUser  bool              `mapstructure:"register_user"`
+	ClientID            string                    `mapstructure:"client_id"`
+	ClientSecret        string                    `mapstructure:"client_secret"`
+	DynamicClientSecret OAuth2DynamicClientSecret `mapstructure:"dynamic_client_secret"`
+	RedirectUrl         string                    `mapstructure:"redirect_url"`
+	Scopes              []string                  `mapstructure:"scopes"`
+	AuthUrl             string                    `mapstructure:"auth_url"`
+	TokenUrl            string                    `mapstructure:"token_url"`
+	OpenIDConfUrl       string                    `mapstructure:"openid_conf_url"`
+	AuthRequest         ConfigAuthRequest         `mapstructure:"authrequest"`
+	RegisterUser        bool                      `mapstructure:"register_user"`
 
 	OpenIDConfiguration dto.OpenIDConf `mapstructure:"openid_configuration"`
+}
+
+type OAuth2DynamicClientSecret struct {
+	PrivateKeyPath string   `mapstructure:"private_key_path"`
+	Issuer         string   `mapstructure:"iss"`
+	Subject        string   `mapstructure:"sub"`
+	Audience       []string `mapstructure:"aud"`
+	KeyID          string   `mapstructure:"kid"`
+	Alg            string   `mapstructure:"alg"`
+	ExpiresIn      string   `mapstructure:"expires_in"` // in seconds
 }
 
 type JwksConfig struct {
