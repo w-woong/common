@@ -19,6 +19,7 @@ type JwksGetter interface {
 type JwksCache struct {
 	store   *bigcache.BigCache
 	jwksUrl string
+	client  *http.Client
 }
 
 func NewJwksCache(jwksUrl string) (*JwksCache, error) {
@@ -57,13 +58,14 @@ func NewJwksCache(jwksUrl string) (*JwksCache, error) {
 	return &JwksCache{
 		store:   cache,
 		jwksUrl: jwksUrl,
+		client:  sihttp.DefaultInsecureClient(),
 	}, nil
 }
 
 func (u *JwksCache) Get() ([]byte, error) {
 	jwksJson, err := u.store.Get("jwks")
 	if err != nil {
-		jwksJson, err = getJwks(u.jwksUrl)
+		jwksJson, err = getJwks(u.client, u.jwksUrl)
 		if err != nil {
 			return nil, err
 		}
@@ -76,22 +78,23 @@ func (u *JwksCache) Get() ([]byte, error) {
 
 type JwksHttp struct {
 	jwksUrl string
+	client  *http.Client
 }
 
 func NewJwksHttp(jwksUrl string) (*JwksHttp, error) {
 	return &JwksHttp{
 		jwksUrl: jwksUrl,
+		client:  sihttp.DefaultInsecureClient(),
 	}, nil
 }
 
 func (u *JwksHttp) Get() ([]byte, error) {
-	return getJwks(u.jwksUrl)
+	return getJwks(u.client, u.jwksUrl)
 }
 
-func getJwks(url string) (json.RawMessage, error) {
-	// TODO: cache jwks
+func getJwks(client *http.Client, url string) (json.RawMessage, error) {
 
-	resp, err := http.Get(url)
+	resp, err := client.Get(url)
 	if err != nil {
 		return nil, err
 	}
