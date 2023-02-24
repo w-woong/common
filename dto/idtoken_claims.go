@@ -6,6 +6,13 @@ var (
 	NilIDTokenClaims = IDTokenClaims{}
 )
 
+const (
+	JwtCtxKey           = "jwt_ctx_key"
+	IDTokenCtxKey       = "id_token_ctx_key"
+	IDTokenClaimsCtxKey = "id_token_claims_ctx_key"
+	UserAccountCtxKey   = "user_account_ctx_key"
+)
+
 type JwtTokenContextKey struct{}
 type IDTokenContextKey struct{}
 type IDTokenClaimsContextKey struct{}
