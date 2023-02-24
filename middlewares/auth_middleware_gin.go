@@ -43,7 +43,7 @@ func GetIDTokenJwtAndClaimsGin(cookie port.TokenCookie, parser port.IDTokenParse
 		if err != nil {
 			if !errors.Is(err, common.ErrTokenExpired) {
 				oerr := common.OAuth2ErrorInvalidRequest(err.Error(), http.StatusUnauthorized)
-				http.Error(w, oerr.Error(), oerr.StatusCode)
+				http.Error(w, oerr.Error(), oerr.GetStatusCode())
 				logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 				c.Abort()
 				return
@@ -53,7 +53,7 @@ func GetIDTokenJwtAndClaimsGin(cookie port.TokenCookie, parser port.IDTokenParse
 		claims, ok := jwtToken.Claims.(*dto.IDTokenClaims)
 		if !ok {
 			oerr := common.OAuth2ErrorInvalidClaims()
-			http.Error(w, oerr.Error(), oerr.StatusCode)
+			http.Error(w, oerr.Error(), oerr.GetStatusCode())
 			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 			c.Abort()
 			return
@@ -79,7 +79,7 @@ func AuthIDTokenGin(cookie port.TokenCookie, parser port.IDTokenParser) gin.Hand
 		if err != nil {
 			if errors.Is(err, common.ErrTokenExpired) {
 				oerr := common.OAuth2ErrorTryRefresh(err.Error())
-				http.Error(w, oerr.Error(), oerr.StatusCode)
+				http.Error(w, oerr.Error(), oerr.GetStatusCode())
 				logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 				c.Abort()
 
@@ -90,7 +90,7 @@ func AuthIDTokenGin(cookie port.TokenCookie, parser port.IDTokenParser) gin.Hand
 			}
 
 			oerr := common.OAuth2ErrorInvalidRequest(err.Error(), http.StatusUnauthorized)
-			http.Error(w, oerr.Error(), oerr.StatusCode)
+			http.Error(w, oerr.Error(), oerr.GetStatusCode())
 			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 			c.Abort()
 			return
@@ -99,7 +99,7 @@ func AuthIDTokenGin(cookie port.TokenCookie, parser port.IDTokenParser) gin.Hand
 		claims, ok := jwtToken.Claims.(*dto.IDTokenClaims)
 		if !ok {
 			oerr := common.OAuth2ErrorInvalidClaims()
-			http.Error(w, oerr.Error(), oerr.StatusCode)
+			http.Error(w, oerr.Error(), oerr.GetStatusCode())
 			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 			c.Abort()
 			return
@@ -155,13 +155,13 @@ func AuthIDTokenUserAccountSvcGin(cookie port.TokenCookie, parser port.IDTokenPa
 		if err != nil {
 			if errors.Is(err, common.ErrTokenExpired) {
 				oerr := common.OAuth2ErrorTryRefresh(err.Error())
-				http.Error(w, oerr.Error(), oerr.StatusCode)
+				http.Error(w, oerr.Error(), oerr.GetStatusCode())
 				logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 				c.Abort()
 				return
 			}
 			oerr := common.OAuth2ErrorInvalidRequest(err.Error(), http.StatusUnauthorized)
-			http.Error(w, oerr.Error(), oerr.StatusCode)
+			http.Error(w, oerr.Error(), oerr.GetStatusCode())
 			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 			c.Abort()
 			return
@@ -170,7 +170,7 @@ func AuthIDTokenUserAccountSvcGin(cookie port.TokenCookie, parser port.IDTokenPa
 		claims, ok := jwtToken.Claims.(*dto.IDTokenClaims)
 		if !ok {
 			oerr := common.OAuth2ErrorInvalidClaims()
-			http.Error(w, oerr.Error(), oerr.StatusCode)
+			http.Error(w, oerr.Error(), oerr.GetStatusCode())
 			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 			c.Abort()
 			return
@@ -179,7 +179,7 @@ func AuthIDTokenUserAccountSvcGin(cookie port.TokenCookie, parser port.IDTokenPa
 		userAccount, err := userSvc.FindByIDToken(c, idToken)
 		if err != nil {
 			oerr := common.OAuth2ErrorInvalidRequest(err.Error(), http.StatusUnauthorized)
-			http.Error(w, oerr.Error(), oerr.StatusCode)
+			http.Error(w, oerr.Error(), oerr.GetStatusCode())
 			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 			c.Abort()
 			return
