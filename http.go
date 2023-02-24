@@ -60,11 +60,11 @@ func (m *HttpBody) EncodeTo(w io.Writer) error {
 }
 
 type OAuth2Error struct {
-	ErrorTitle       string `json:"error"`
+	ErrorTitle       string `json:"error,omitempty"`
 	ErrorDebug       string `json:"error_debug,omitempty"`
-	ErrorDescription string `json:"error_description"`
+	ErrorDescription string `json:"error_description,omitempty"`
 	ErrorHint        string `json:"error_hint,omitempty"`
-	StatusCode       int    `json:"status_code"`
+	StatusCode       *int   `json:"status_code,omitempty"`
 
 	TryRefresh        *bool `json:"try_refresh,omitempty"`
 	TryReauthenticate *bool `json:"try_reauthenticate,omitempty"`
@@ -91,21 +91,23 @@ func OAuth2ErrorUnsupportedGrantType(errorDescription string, statusCode int) *O
 }
 func OAuth2ErrorTryRefresh(errorDescription string) *OAuth2Error {
 	val := true
+	sc := http.StatusUnauthorized
 	return &OAuth2Error{
 		ErrorTitle:       "invalid_request",
 		ErrorDescription: errorDescription,
 		// ErrorHint:        errorHint,
-		StatusCode: http.StatusUnauthorized,
+		StatusCode: &sc,
 		TryRefresh: &val,
 	}
 }
 func OAuth2ErrorTryReauthenticate(errorDescription string) *OAuth2Error {
 	val := true
+	sc := http.StatusUnauthorized
 	return &OAuth2Error{
 		ErrorTitle:       "invalid_request",
 		ErrorDescription: errorDescription,
 		// ErrorHint:        errorHint,
-		StatusCode:        http.StatusUnauthorized,
+		StatusCode:        &sc,
 		TryReauthenticate: &val,
 	}
 }
@@ -124,7 +126,7 @@ func NewOAuth2Error(errorTitle string, errorDescription string, errorHint string
 		ErrorTitle:       errorTitle,
 		ErrorDescription: errorDescription,
 		ErrorHint:        errorHint,
-		StatusCode:       statusCode,
+		StatusCode:       &statusCode,
 	}
 }
 
