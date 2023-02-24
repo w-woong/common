@@ -45,6 +45,7 @@ func GetIDTokenJwtAndClaimsGin(cookie port.TokenCookie, parser port.IDTokenParse
 				oerr := common.OAuth2ErrorInvalidRequest(err.Error(), http.StatusUnauthorized)
 				http.Error(w, oerr.Error(), oerr.StatusCode)
 				logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
+				c.Abort()
 				return
 			}
 		}
@@ -54,6 +55,7 @@ func GetIDTokenJwtAndClaimsGin(cookie port.TokenCookie, parser port.IDTokenParse
 			oerr := common.OAuth2ErrorInvalidClaims()
 			http.Error(w, oerr.Error(), oerr.StatusCode)
 			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
+			c.Abort()
 			return
 		}
 
@@ -79,6 +81,7 @@ func AuthIDTokenGin(cookie port.TokenCookie, parser port.IDTokenParser) gin.Hand
 				oerr := common.OAuth2ErrorTryRefresh(err.Error())
 				http.Error(w, oerr.Error(), oerr.StatusCode)
 				logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
+				c.Abort()
 
 				// common.HttpErrorWithBody(w, http.StatusUnauthorized,
 				// 	common.NewHttpBody(http.StatusText(http.StatusUnauthorized), common.StatusTryRefreshIDToken))
@@ -89,6 +92,7 @@ func AuthIDTokenGin(cookie port.TokenCookie, parser port.IDTokenParser) gin.Hand
 			oerr := common.OAuth2ErrorInvalidRequest(err.Error(), http.StatusUnauthorized)
 			http.Error(w, oerr.Error(), oerr.StatusCode)
 			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
+			c.Abort()
 			return
 		}
 
@@ -97,6 +101,7 @@ func AuthIDTokenGin(cookie port.TokenCookie, parser port.IDTokenParser) gin.Hand
 			oerr := common.OAuth2ErrorInvalidClaims()
 			http.Error(w, oerr.Error(), oerr.StatusCode)
 			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
+			c.Abort()
 			return
 		}
 
@@ -152,12 +157,13 @@ func AuthIDTokenUserAccountSvcGin(cookie port.TokenCookie, parser port.IDTokenPa
 				oerr := common.OAuth2ErrorTryRefresh(err.Error())
 				http.Error(w, oerr.Error(), oerr.StatusCode)
 				logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
-
+				c.Abort()
 				return
 			}
 			oerr := common.OAuth2ErrorInvalidRequest(err.Error(), http.StatusUnauthorized)
 			http.Error(w, oerr.Error(), oerr.StatusCode)
 			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
+			c.Abort()
 			return
 		}
 
@@ -166,6 +172,7 @@ func AuthIDTokenUserAccountSvcGin(cookie port.TokenCookie, parser port.IDTokenPa
 			oerr := common.OAuth2ErrorInvalidClaims()
 			http.Error(w, oerr.Error(), oerr.StatusCode)
 			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
+			c.Abort()
 			return
 		}
 
@@ -174,6 +181,7 @@ func AuthIDTokenUserAccountSvcGin(cookie port.TokenCookie, parser port.IDTokenPa
 			oerr := common.OAuth2ErrorInvalidRequest(err.Error(), http.StatusUnauthorized)
 			http.Error(w, oerr.Error(), oerr.StatusCode)
 			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
+			c.Abort()
 			return
 		}
 		c.Set(dto.IDTokenClaimsCtxKey, *claims)
