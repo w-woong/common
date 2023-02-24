@@ -70,6 +70,25 @@ type OAuth2Error struct {
 	TryReauthenticate *bool `json:"try_reauthenticate,omitempty"`
 }
 
+func (o OAuth2Error) GetStatusCode() int {
+	if o.StatusCode == nil {
+		return 0
+	}
+	return *o.StatusCode
+}
+func (o OAuth2Error) GetTryRefresh() bool {
+	if o.TryRefresh == nil {
+		return false
+	}
+	return *o.TryRefresh
+}
+func (o OAuth2Error) GetTryReauthenticate() bool {
+	if o.TryReauthenticate == nil {
+		return false
+	}
+	return *o.TryReauthenticate
+}
+
 func OAuth2ErrorInvalidRequest(errorDescription string, statusCode int) *OAuth2Error {
 	return NewOAuth2Error("invalid_request", errorDescription, "", statusCode)
 }
