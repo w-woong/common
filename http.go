@@ -59,12 +59,28 @@ func (m *HttpBody) EncodeTo(w io.Writer) error {
 	return si.EncodeJson(w, m)
 }
 
+type OAuth2ErrorType string
+
+const (
+	InvalidRequestErrorType       OAuth2ErrorType = "invalid_request"
+	InvalidClientErrorType        OAuth2ErrorType = "invalid_client"
+	InvalidGrantErrorType         OAuth2ErrorType = "invalid_grant"
+	InvalidScopeErrorType         OAuth2ErrorType = "invalid_scope"
+	UnauthorizedClientErrorType   OAuth2ErrorType = "unauthorized_client"
+	UnsupportedGrantTypeErrorType OAuth2ErrorType = "unsupported_grant_type"
+
+	AccessDeniedErrorType    OAuth2ErrorType = "access_denied"
+	UnsupportedResponseType  OAuth2ErrorType = "unsupported_response_type"
+	ServerErrorType          OAuth2ErrorType = "server_error"
+	TempUnavailableErrorType OAuth2ErrorType = "temporarily_unavailable"
+)
+
 type OAuth2Error struct {
-	ErrorTitle       string `json:"error,omitempty"`
-	ErrorDebug       string `json:"error_debug,omitempty"`
-	ErrorDescription string `json:"error_description,omitempty"`
-	ErrorHint        string `json:"error_hint,omitempty"`
-	StatusCode       *int   `json:"status_code,omitempty"`
+	ErrorType        OAuth2ErrorType `json:"error,omitempty"`
+	ErrorDebug       string          `json:"error_debug,omitempty"`
+	ErrorDescription string          `json:"error_description,omitempty"`
+	ErrorHint        string          `json:"error_hint,omitempty"`
+	StatusCode       *int            `json:"status_code,omitempty"`
 
 	TryRefresh        *bool `json:"try_refresh,omitempty"`
 	TryReauthenticate *bool `json:"try_reauthenticate,omitempty"`
@@ -90,29 +106,29 @@ func (o OAuth2Error) GetTryReauthenticate() bool {
 }
 
 func OAuth2ErrorInvalidRequest(errorDescription string, statusCode int) *OAuth2Error {
-	return NewOAuth2Error("invalid_request", errorDescription, "", statusCode)
+	return NewOAuth2Error(InvalidRequestErrorType, errorDescription, statusCode)
 }
 
 func OAuth2ErrorInvalidClient(errorDescription string, statusCode int) *OAuth2Error {
-	return NewOAuth2Error("invalid_client", errorDescription, "", statusCode)
+	return NewOAuth2Error(InvalidClientErrorType, errorDescription, statusCode)
 }
 func OAuth2ErrorInvalidGrant(errorDescription string, statusCode int) *OAuth2Error {
-	return NewOAuth2Error("invalid_grant", errorDescription, "", statusCode)
+	return NewOAuth2Error(InvalidGrantErrorType, errorDescription, statusCode)
 }
 func OAuth2ErrorInvalidScope(errorDescription string, statusCode int) *OAuth2Error {
-	return NewOAuth2Error("invalid_scope", errorDescription, "", statusCode)
+	return NewOAuth2Error(InvalidScopeErrorType, errorDescription, statusCode)
 }
 func OAuth2ErrorUnauthorizedClient(errorDescription string, statusCode int) *OAuth2Error {
-	return NewOAuth2Error("unauthorized_client", errorDescription, "", statusCode)
+	return NewOAuth2Error(UnauthorizedClientErrorType, errorDescription, statusCode)
 }
 func OAuth2ErrorUnsupportedGrantType(errorDescription string, statusCode int) *OAuth2Error {
-	return NewOAuth2Error("unsupported_grant_type", errorDescription, "", statusCode)
+	return NewOAuth2Error(UnsupportedGrantTypeErrorType, errorDescription, statusCode)
 }
 func OAuth2ErrorTryRefresh(errorDescription string) *OAuth2Error {
 	val := true
 	sc := http.StatusUnauthorized
 	return &OAuth2Error{
-		ErrorTitle:       "invalid_request",
+		ErrorType:        InvalidRequestErrorType,
 		ErrorDescription: errorDescription,
 		// ErrorHint:        errorHint,
 		StatusCode: &sc,
@@ -123,7 +139,7 @@ func OAuth2ErrorTryReauthenticate(errorDescription string) *OAuth2Error {
 	val := true
 	sc := http.StatusUnauthorized
 	return &OAuth2Error{
-		ErrorTitle:       "invalid_request",
+		ErrorType:        InvalidRequestErrorType,
 		ErrorDescription: errorDescription,
 		// ErrorHint:        errorHint,
 		StatusCode:        &sc,
@@ -132,19 +148,18 @@ func OAuth2ErrorTryReauthenticate(errorDescription string) *OAuth2Error {
 }
 
 func OAuth2ErrorInvalidClaims() *OAuth2Error {
-	return NewOAuth2Error("invalid_request", ErrTokenInvalidClaims.Error(), "", http.StatusUnauthorized)
+	return NewOAuth2Error(InvalidRequestErrorType, ErrTokenInvalidClaims.Error(), http.StatusUnauthorized)
 }
 
 // OAuth2ErrorRequestDenied when user denied request
 func OAuth2ErrorRequestDenied(errorDescription string, statusCode int) *OAuth2Error {
-	return NewOAuth2Error("request_denied", errorDescription, "", statusCode)
+	return NewOAuth2Error("request_denied", errorDescription, statusCode)
 }
 
-func NewOAuth2Error(errorTitle string, errorDescription string, errorHint string, statusCode int) *OAuth2Error {
+func NewOAuth2Error(errorType OAuth2ErrorType, errorDescription string, statusCode int) *OAuth2Error {
 	return &OAuth2Error{
-		ErrorTitle:       errorTitle,
+		ErrorType:        errorType,
 		ErrorDescription: errorDescription,
-		ErrorHint:        errorHint,
 		StatusCode:       &statusCode,
 	}
 }
