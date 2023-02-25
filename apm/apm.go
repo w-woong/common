@@ -6,7 +6,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/go-wonk/si/sihttp"
+	"github.com/go-wonk/si/v2/sihttp"
 	"github.com/w-woong/common/utils"
 	"go.elastic.co/apm/v2"
 )

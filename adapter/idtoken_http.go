@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/go-wonk/si/sicore"
-	"github.com/go-wonk/si/sihttp"
+	"github.com/go-wonk/si/v2/sicore"
+	"github.com/go-wonk/si/v2/sihttp"
 	"github.com/w-woong/common/dto"
 )
 
@@ -52,7 +52,7 @@ func (a *IDTokenHttp) Refresh(ctx context.Context, tokenSource, tokenIdentifier 
 	header[a.idTokenKey] = []string{idToken}
 
 	res := dto.Token{}
-	err := a.client.RequestGetDecodeContext(ctx, "/v1/oauth2/validate/"+tokenSource, header, nil, &res)
+	err := a.client.GetDecodeContext(ctx, "/v1/oauth2/validate/"+tokenSource, header, nil, &res)
 	if err != nil {
 		return dto.NilToken, err
 	}

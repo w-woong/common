@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/go-wonk/si/sihttp"
+	"github.com/go-wonk/si/v2/sihttp"
 	"github.com/stretchr/testify/assert"
 	"github.com/w-woong/common/adapter"
 	"github.com/w-woong/common/dto"
@@ -17,7 +17,7 @@ func Test_userHttp_RegisterUser(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	userHttp := adapter.NewUserHttp(sihttp.DefaultInsecureClient(), "https://localhost:49007") // , "ab2316584873095f017f6dfa7a9415794f563fcc473eb3fe65b9167e37fd5a4b",
+	userHttp := adapter.NewUserHttp(sihttp.DefaultInsecureStandardClient(), "https://localhost:49007") // , "ab2316584873095f017f6dfa7a9415794f563fcc473eb3fe65b9167e37fd5a4b",
 	// 	"token_source", "tid", "id_token",
 
 	_, err := userHttp.RegisterUser(ctx, dto.User{

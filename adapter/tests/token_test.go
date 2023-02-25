@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/go-wonk/si/sihttp"
+	"github.com/go-wonk/si/v2/sihttp"
 	"github.com/stretchr/testify/assert"
 	"github.com/w-woong/common/adapter"
 )
@@ -15,7 +15,7 @@ func TestRefresh(t *testing.T) {
 		t.Skip("skipping online tests")
 	}
 
-	client := sihttp.DefaultInsecureClient()
+	client := sihttp.DefaultInsecureStandardClient()
 	svc := adapter.NewIDTokenHttp(client, "https://localhost:5558",
 		"ab2316584873095f017f6dfa7a9415794f563fcc473eb3fe65b9167e37fd5a4b", "tid", "id_token")
 
