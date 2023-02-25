@@ -2,12 +2,13 @@ package adapter
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"net/url"
 
-	"github.com/go-wonk/si/sicore"
-	"github.com/go-wonk/si/sihttp"
+	"github.com/go-wonk/si/v2/sicore"
+	"github.com/go-wonk/si/v2/sihttp"
 	"github.com/w-woong/common"
 	"github.com/w-woong/common/dto"
 	"github.com/w-woong/common/port"
@@ -52,13 +53,8 @@ func (a *userHttp) RegisterUser(ctx context.Context, user dto.User) (dto.User, e
 	res := common.HttpBody{
 		Document: &resUser,
 	}
-	err := a.client.RequestPostDecodeContext(ctx, "/v1/user", nil, &req, &res)
+	err := a.client.PostDecodeContext(ctx, "/v1/user", nil, &req, &res)
 	if err != nil {
-		if se, ok := err.(*sihttp.SiHttpError); ok {
-			if se.Status == common.StatusTryRefreshIDToken {
-				return dto.NilUser, common.ErrTokenExpired
-			}
-		}
 		return dto.NilUser, err
 	}
 
@@ -77,18 +73,20 @@ func (a *userHttp) FindByIDToken(ctx context.Context, idToken string) (dto.User,
 	}
 	header := make(http.Header)
 	header["Authorization"] = []string{"Bearer " + idToken}
-	err := a.client.RequestGetDecodeContext(ctx, "/v1/user/account", header, nil, &res)
+	err := a.client.GetDecodeContext(ctx, "/v1/user/account", header, nil, &res)
 	if err != nil {
-		if se, ok := err.(*sihttp.SiHttpError); ok {
-			if se.Status == common.StatusTryRefreshIDToken {
+		if se, ok := err.(*sihttp.Error); ok {
+			val := false
+			oerr := common.OAuth2Error{
+				TryRefresh: &val,
+			}
+			json.Unmarshal(se.Body, &oerr)
+
+			if *oerr.TryRefresh {
 				return dto.NilUser, common.ErrTokenExpired
 			}
 		}
 		return dto.NilUser, err
-	}
-
-	if res.Status != http.StatusOK {
-		return resUser, errors.New(res.Message)
 	}
 
 	return resUser, nil

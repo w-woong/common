@@ -6,7 +6,7 @@ require (
 	github.com/MicahParks/keyfunc v1.7.0
 	github.com/allegro/bigcache/v3 v3.1.0
 	github.com/gin-gonic/gin v1.9.0
-	github.com/go-wonk/si v0.2.12
+	github.com/go-wonk/si/v2 v2.1.5
 	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/golang/mock v1.4.4
 	github.com/gorilla/mux v1.8.0

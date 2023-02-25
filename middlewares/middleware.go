@@ -9,9 +9,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/go-wonk/si"
-	"github.com/go-wonk/si/sicore"
-	"github.com/go-wonk/si/sihttp"
+	"github.com/go-wonk/si/v2"
+	"github.com/go-wonk/si/v2/sicore"
+	"github.com/go-wonk/si/v2/sihttp"
 	"github.com/w-woong/common"
 	"github.com/w-woong/common/logger"
 	"github.com/w-woong/common/utils"

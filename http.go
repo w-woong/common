@@ -5,7 +5,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/go-wonk/si"
+	"github.com/go-wonk/si/v2"
 )
 
 func HttpOK(w http.ResponseWriter) error {
