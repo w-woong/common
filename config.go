@@ -99,7 +99,8 @@ type ConfigFile struct {
 
 type ConfigClient struct {
 	// Oauth2 ConfigOauth2            `mapstructure:"oauth2"`
-	IDTokenCookie CookieConfig `mapstructure:"id_token_cookie"`
+	IDTokenCookie CookieConfig            `mapstructure:"id_token_cookie"`
+	Cookies       map[string]CookieConfig `mapstructure:"cookies"`
 
 	OAuth2 map[string]OAuth2Config `mapstructure:"oauth2"`
 	Http   ConfigHttpClient        `mapstructure:"http"`
@@ -152,6 +153,14 @@ type ConfigHttpClient struct {
 	BearerToken string `mapstructure:"bearer_token"`
 	HmacSecret  string `mapstructure:"hmac_secret"`
 	HmacHeader  string `mapstructure:"hmac_header"`
+
+	DialTimeout        int  `mapstructure:"dial_timeout"` // in seconds
+	MaxIdleConns       int  `mapstructure:"max_idle_conns"`
+	IdleConnTimeout    int  `mapstructure:"idle_conn_timeout"` // in seconds
+	DisableCompression bool `mapstructure:"disable_compression"`
+	DisableKeepAlive   bool `mapstructure:"disable_keep_alive"`
+
+	ClientTimeout int `mapstructure:"client_timeout"` // in seconds
 }
 
 // OAuth2 client's configs
