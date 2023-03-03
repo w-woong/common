@@ -167,7 +167,7 @@ type ConfigHttpClient struct {
 	Insecure      bool `mapstructure:"insecure"`
 }
 
-func (c ConfigHttpClient) CreateHttpClient() *http.Client {
+func (c ConfigHttpClient) NewHttpClient() *http.Client {
 	tlsConfig := &tls.Config{
 		InsecureSkipVerify: c.Insecure,
 	}
