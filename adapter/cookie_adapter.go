@@ -29,8 +29,23 @@ func (a *SecureCookie) Get(r *http.Request) string {
 	return get(r, a.name)
 }
 
-func (a *SecureCookie) Set(w http.ResponseWriter, idToken string) {
-	set(w, a.mode, a.name, idToken, a.expireAfter, 0, a.domain, a.path)
+func (a *SecureCookie) Set(w http.ResponseWriter, val string) {
+	set(w, a.mode, a.name, val, a.expireAfter, 0, a.domain, a.path)
+}
+
+func (a *SecureCookie) Clear(w http.ResponseWriter) {
+	cookie := http.Cookie{
+		Name:     a.name,
+		Value:    "",
+		HttpOnly: true,
+		SameSite: a.mode,
+		Path:     a.path,
+		Expires:  time.Now(),
+		MaxAge:   -1,
+		Secure:   true,
+		Domain:   a.domain,
+	}
+	http.SetCookie(w, &cookie)
 }
 
 func set(w http.ResponseWriter, sameSiteMode http.SameSite, name, value string, expireAfter time.Duration, maxAge int, domain string, path string) {
