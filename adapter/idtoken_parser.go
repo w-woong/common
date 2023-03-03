@@ -1,6 +1,8 @@
 package adapter
 
 import (
+	"errors"
+
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/w-woong/common"
 	"github.com/w-woong/common/utils"
@@ -8,6 +10,9 @@ import (
 
 type jwksIDTokenParser struct {
 	jwksStore utils.JwksGetter
+
+	openidConfUrl  string
+	defaultJwksUri string
 }
 
 func NewJwksIDTokenParser(jwksStore utils.JwksGetter) *jwksIDTokenParser {
@@ -16,12 +21,52 @@ func NewJwksIDTokenParser(jwksStore utils.JwksGetter) *jwksIDTokenParser {
 	}
 }
 
+func NewJwksIDTokenParserWithUrl(openidConfUrl string, defaultJwksUri string) *jwksIDTokenParser {
+	return &jwksIDTokenParser{
+		openidConfUrl:  openidConfUrl,
+		defaultJwksUri: defaultJwksUri,
+	}
+}
+
+func (u *jwksIDTokenParser) getJwksStore() (utils.JwksGetter, error) {
+	if u.jwksStore != nil {
+		return u.jwksStore, nil
+	}
+
+	var err error
+	jwksUrl := ""
+	if u.openidConfUrl != "" {
+		jwksUrl, err = utils.GetJwksUrl(u.openidConfUrl)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if jwksUrl == "" {
+		jwksUrl = u.defaultJwksUri
+	}
+
+	if jwksUrl != "" {
+		return nil, errors.New("invalid jwks url")
+	}
+
+	u.jwksStore, err = utils.NewJwksCache(jwksUrl)
+	if err != nil {
+		return nil, err
+	}
+	return u.jwksStore, nil
+}
+
 func (u *jwksIDTokenParser) ParseWithClaims(idToken string, claims jwt.Claims) (*jwt.Token, error) {
 	if idToken == "" {
 		return nil, common.ErrIDTokenNotFound
 	}
 
-	jwksJson, err := u.jwksStore.Get()
+	store, err := u.getJwksStore()
+	if err != nil {
+		return nil, err
+	}
+
+	jwksJson, err := store.Get()
 	if err != nil {
 		return nil, err
 	}
