@@ -1,8 +1,11 @@
 package common
 
 import (
+	"crypto/tls"
 	"encoding/json"
+	"net"
 	"net/http"
+	"time"
 
 	"github.com/w-woong/common/dto"
 )
@@ -160,7 +163,30 @@ type ConfigHttpClient struct {
 	DisableCompression bool `mapstructure:"disable_compression"`
 	DisableKeepAlive   bool `mapstructure:"disable_keep_alive"`
 
-	ClientTimeout int `mapstructure:"client_timeout"` // in seconds
+	ClientTimeout int  `mapstructure:"client_timeout"` // in seconds
+	Insecure      bool `mapstructure:"insecure"`
+}
+
+func (c ConfigHttpClient) NewHttpClient() *http.Client {
+	tlsConfig := &tls.Config{
+		InsecureSkipVerify: c.Insecure,
+	}
+	dialer := &net.Dialer{Timeout: time.Duration(c.DialTimeout) * time.Second}
+
+	tr := &http.Transport{
+		MaxIdleConns:       c.MaxIdleConns,
+		IdleConnTimeout:    time.Duration(c.IdleConnTimeout) * time.Second,
+		DisableCompression: c.DisableCompression,
+		TLSClientConfig:    tlsConfig,
+		DisableKeepAlives:  c.DisableKeepAlive,
+		Dial:               dialer.Dial,
+	}
+
+	client := &http.Client{
+		Timeout:   time.Duration(c.ClientTimeout) * time.Second,
+		Transport: tr,
+	}
+	return client
 }
 
 // OAuth2 client's configs
