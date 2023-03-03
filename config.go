@@ -177,6 +177,8 @@ type OAuth2Config struct {
 	RegisterUser        bool                      `mapstructure:"register_user"`
 
 	OpenIDConfiguration dto.OpenIDConf `mapstructure:"openid_configuration"`
+
+	HttpClient ConfigHttpClient `mapstructure:"http_client"`
 }
 
 type OAuth2DynamicClientSecret struct {
