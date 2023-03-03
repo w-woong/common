@@ -17,14 +17,14 @@ import (
 
 // GetIDTokenJwtAndClaims validates and refresh id_token. It first retrieves id_token from request, r.
 // Then, it parses the token to get the claims. It ignores ErrTokenExpired.
-func GetIDToken(next http.HandlerFunc, cookie port.TokenCookie) http.HandlerFunc {
+func GetIDToken(next http.HandlerFunc, cookie port.Cookie) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		ctx := r.Context()
 		idToken := utils.AuthBearer(r)
 		if idToken == "" {
-			idToken = cookie.GetIDToken(r)
+			idToken = cookie.Get(r)
 		}
 
 		ctx = context.WithValue(ctx, dto.IDTokenContextKey{}, idToken)
@@ -35,14 +35,14 @@ func GetIDToken(next http.HandlerFunc, cookie port.TokenCookie) http.HandlerFunc
 
 // GetIDTokenJwtAndClaims validates and refresh id_token. It first retrieves id_token from request, r.
 // Then, it parses the token to get the claims. It ignores ErrTokenExpired.
-func GetIDTokenJwtAndClaims(next http.HandlerFunc, cookie port.TokenCookie, parser port.IDTokenParser) http.HandlerFunc {
+func GetIDTokenJwtAndClaims(next http.HandlerFunc, cookie port.Cookie, parser port.IDTokenParser) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		ctx := r.Context()
 		idToken := utils.AuthBearer(r)
 		if idToken == "" {
-			idToken = cookie.GetIDToken(r)
+			idToken = cookie.Get(r)
 		}
 
 		jwtToken, err := parser.ParseWithClaims(idToken, &dto.IDTokenClaims{})
@@ -70,14 +70,14 @@ func GetIDTokenJwtAndClaims(next http.HandlerFunc, cookie port.TokenCookie, pars
 	}
 }
 
-func AuthIDToken(next http.HandlerFunc, cookie port.TokenCookie, parser port.IDTokenParser) http.HandlerFunc {
+func AuthIDToken(next http.HandlerFunc, cookie port.Cookie, parser port.IDTokenParser) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		ctx := r.Context()
 		idToken := utils.AuthBearer(r)
 		if idToken == "" {
-			idToken = cookie.GetIDToken(r)
+			idToken = cookie.Get(r)
 		}
 		jwtToken, err := parser.ParseWithClaims(idToken, &dto.IDTokenClaims{})
 		if err != nil {
@@ -110,14 +110,14 @@ func AuthIDToken(next http.HandlerFunc, cookie port.TokenCookie, parser port.IDT
 	}
 }
 
-func AuthIDTokenIgnoreErr(next http.HandlerFunc, cookie port.TokenCookie, parser port.IDTokenParser) http.HandlerFunc {
+func AuthIDTokenIgnoreErr(next http.HandlerFunc, cookie port.Cookie, parser port.IDTokenParser) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		ctx := r.Context()
 		idToken := utils.AuthBearer(r)
 		if idToken == "" {
-			idToken = cookie.GetIDToken(r)
+			idToken = cookie.Get(r)
 		}
 
 		jwtToken, _ := parser.ParseWithClaims(idToken, &dto.IDTokenClaims{})
@@ -138,7 +138,7 @@ func AuthIDTokenIgnoreErr(next http.HandlerFunc, cookie port.TokenCookie, parser
 		next.ServeHTTP(w, r.WithContext(ctx))
 	}
 }
-func AuthIDTokenUserAccountSvc(next http.HandlerFunc, cookie port.TokenCookie, parser port.IDTokenParser,
+func AuthIDTokenUserAccountSvc(next http.HandlerFunc, cookie port.Cookie, parser port.IDTokenParser,
 	userSvc port.UserSvc) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -146,7 +146,7 @@ func AuthIDTokenUserAccountSvc(next http.HandlerFunc, cookie port.TokenCookie, p
 
 		idToken := utils.AuthBearer(r)
 		if idToken == "" {
-			idToken = cookie.GetIDToken(r)
+			idToken = cookie.Get(r)
 		}
 		jwtToken, err := parser.ParseWithClaims(idToken, &dto.IDTokenClaims{})
 		if err != nil {
