@@ -45,7 +45,7 @@ func (u *jwksIDTokenParser) getJwksStore() (utils.JwksGetter, error) {
 		jwksUrl = u.defaultJwksUri
 	}
 
-	if jwksUrl != "" {
+	if jwksUrl == "" {
 		return nil, errors.New("invalid jwks url")
 	}
 
