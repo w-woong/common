@@ -6,7 +6,7 @@ require (
 	github.com/MicahParks/keyfunc v1.7.0
 	github.com/allegro/bigcache/v3 v3.1.0
 	github.com/gin-gonic/gin v1.9.0
-	github.com/go-wonk/si/v2 v2.1.5
+	github.com/go-wonk/si/v2 v2.1.7
 	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/golang/mock v1.4.4
 	github.com/gorilla/mux v1.8.0
@@ -18,6 +18,7 @@ require (
 	go.elastic.co/apm/module/apmgrpc/v2 v2.2.0
 	go.elastic.co/apm/v2 v2.2.0
 	go.uber.org/zap v1.23.0
+	golang.org/x/oauth2 v0.0.0-20221014153046-6fdb5e3db783
 	google.golang.org/grpc v1.50.1
 	google.golang.org/protobuf v1.28.1
 	gorm.io/driver/postgres v1.4.4
@@ -94,6 +95,7 @@ require (
 	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/text v0.7.0 // indirect
 	golang.org/x/tools v0.1.12 // indirect
+	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20221118155620-16455021b5e6 // indirect
 	google.golang.org/grpc/examples v0.0.0-20221209215812-3e27f89917e8 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
