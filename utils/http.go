@@ -2,6 +2,7 @@ package utils
 
 import (
 	"net/http"
+	"net/http/httputil"
 	"strings"
 )
 
@@ -28,4 +29,8 @@ func SetNoCache(w http.ResponseWriter) {
 	w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate;")
 	w.Header().Set("pragma", "no-cache")
 	w.Header().Set("X-Content-Type-Options", "nosniff")
+}
+
+func RequestDump(r *http.Request) ([]byte, error) {
+	return httputil.DumpRequest(r, true)
 }

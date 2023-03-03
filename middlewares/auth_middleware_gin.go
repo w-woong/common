@@ -12,13 +12,13 @@ import (
 	"github.com/w-woong/common/utils"
 )
 
-func GetIDTokenGin(cookie port.TokenCookie) gin.HandlerFunc {
+func GetIDTokenGin(cookie port.Cookie) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		r := c.Request
 
 		idToken := utils.AuthBearer(r)
 		if idToken == "" {
-			idToken = cookie.GetIDToken(r)
+			idToken = cookie.Get(r)
 		}
 
 		c.Set(dto.IDTokenCtxKey, idToken)
@@ -28,7 +28,7 @@ func GetIDTokenGin(cookie port.TokenCookie) gin.HandlerFunc {
 
 // GetIDTokenJwtAndClaims validates and refresh id_token. It first retrieves id_token from request, r.
 // Then, it parses the token to get the claims. It ignores ErrTokenExpired.
-func GetIDTokenJwtAndClaimsGin(cookie port.TokenCookie, parser port.IDTokenParser) gin.HandlerFunc {
+func GetIDTokenJwtAndClaimsGin(cookie port.Cookie, parser port.IDTokenParser) gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		r := c.Request
@@ -36,7 +36,7 @@ func GetIDTokenJwtAndClaimsGin(cookie port.TokenCookie, parser port.IDTokenParse
 
 		idToken := utils.AuthBearer(r)
 		if idToken == "" {
-			idToken = cookie.GetIDToken(r)
+			idToken = cookie.Get(r)
 		}
 
 		jwtToken, err := parser.ParseWithClaims(idToken, &dto.IDTokenClaims{})
@@ -65,7 +65,7 @@ func GetIDTokenJwtAndClaimsGin(cookie port.TokenCookie, parser port.IDTokenParse
 	}
 }
 
-func AuthIDTokenGin(cookie port.TokenCookie, parser port.IDTokenParser) gin.HandlerFunc {
+func AuthIDTokenGin(cookie port.Cookie, parser port.IDTokenParser) gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		r := c.Request
@@ -73,7 +73,7 @@ func AuthIDTokenGin(cookie port.TokenCookie, parser port.IDTokenParser) gin.Hand
 
 		idToken := utils.AuthBearer(r)
 		if idToken == "" {
-			idToken = cookie.GetIDToken(r)
+			idToken = cookie.Get(r)
 		}
 		jwtToken, err := parser.ParseWithClaims(idToken, &dto.IDTokenClaims{})
 		if err != nil {
@@ -110,7 +110,7 @@ func AuthIDTokenGin(cookie port.TokenCookie, parser port.IDTokenParser) gin.Hand
 	}
 }
 
-func AuthIDTokenIgnoreErrGin(cookie port.TokenCookie, parser port.IDTokenParser) gin.HandlerFunc {
+func AuthIDTokenIgnoreErrGin(cookie port.Cookie, parser port.IDTokenParser) gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		r := c.Request
@@ -118,7 +118,7 @@ func AuthIDTokenIgnoreErrGin(cookie port.TokenCookie, parser port.IDTokenParser)
 
 		idToken := utils.AuthBearer(r)
 		if idToken == "" {
-			idToken = cookie.GetIDToken(r)
+			idToken = cookie.Get(r)
 		}
 
 		jwtToken, _ := parser.ParseWithClaims(idToken, &dto.IDTokenClaims{})
@@ -140,7 +140,7 @@ func AuthIDTokenIgnoreErrGin(cookie port.TokenCookie, parser port.IDTokenParser)
 	}
 }
 
-func AuthIDTokenUserAccountSvcGin(cookie port.TokenCookie, parser port.IDTokenParser,
+func AuthIDTokenUserAccountSvcGin(cookie port.Cookie, parser port.IDTokenParser,
 	userSvc port.UserSvc) gin.HandlerFunc {
 
 	return func(c *gin.Context) {
@@ -149,7 +149,7 @@ func AuthIDTokenUserAccountSvcGin(cookie port.TokenCookie, parser port.IDTokenPa
 
 		idToken := utils.AuthBearer(r)
 		if idToken == "" {
-			idToken = cookie.GetIDToken(r)
+			idToken = cookie.Get(r)
 		}
 		jwtToken, err := parser.ParseWithClaims(idToken, &dto.IDTokenClaims{})
 		if err != nil {

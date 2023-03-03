@@ -33,6 +33,10 @@ func Close() {
 	}
 }
 
+func Logger() core.Logger {
+	return _logger
+}
+
 func OpenGormLogger(level string) *factory.GormLogger {
 	if level == "" {
 		level = string(core.ErrorLevel)
