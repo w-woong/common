@@ -1,6 +1,7 @@
 package wrapper
 
 import (
+	"context"
 	"crypto/tls"
 	"fmt"
 	"net"
@@ -82,6 +83,7 @@ func NewGrpcServer(conf common.ConfigGrpc, certPem, certKey string, apmActive bo
 
 // NewGrpcClient
 // defer conn.Close()
+// TODO: Dial timeout
 func NewGrpcClient(conf common.ConfigGrpcClient, apmActive bool) (*grpc.ClientConn, error) {
 
 	resolver.Register(&grpcResolverBuilder{
@@ -114,7 +116,15 @@ func NewGrpcClient(conf common.ConfigGrpcClient, apmActive bool) (*grpc.ClientCo
 		opts = append(opts, grpc.WithUnaryInterceptor(apmgrpc.NewUnaryClientInterceptor()))
 		opts = append(opts, grpc.WithStreamInterceptor(apmgrpc.NewStreamClientInterceptor()))
 	}
-	conn, err := grpc.Dial(fmt.Sprintf("%s:///%s", conf.ResolverScheme, conf.ResolverServiceName),
+	var dialTimeout time.Duration
+	if conf.DialTimeout == 0 {
+		dialTimeout = 12 * time.Second
+	} else {
+		dialTimeout = time.Duration(conf.DialTimeout) * time.Second
+	}
+	ctx, _ := context.WithTimeout(context.Background(), dialTimeout)
+
+	conn, err := grpc.DialContext(ctx, fmt.Sprintf("%s:///%s", conf.ResolverScheme, conf.ResolverServiceName),
 		opts...)
 	if err != nil {
 		return nil, err
