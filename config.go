@@ -204,7 +204,8 @@ type OAuth2Config struct {
 
 	OpenIDConfiguration dto.OpenIDConf `mapstructure:"openid_configuration"`
 
-	HttpClient ConfigHttpClient `mapstructure:"http_client"`
+	HttpClient         ConfigHttpClient `mapstructure:"http_client"`
+	UserAuthHttpClient ConfigHttpClient `mapstructure:"user_auth_http_client"`
 }
 
 type OAuth2DynamicClientSecret struct {
