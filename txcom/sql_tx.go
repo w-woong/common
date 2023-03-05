@@ -3,7 +3,7 @@ package txcom
 import (
 	"database/sql"
 
-	"github.com/w-woong/common"
+	"github.com/w-woong/common/port"
 )
 
 type SqlTxBeginner struct {
@@ -14,12 +14,12 @@ func NewSqlTxBeginner(db *sql.DB) *SqlTxBeginner {
 	return &SqlTxBeginner{db}
 }
 
-func (t *SqlTxBeginner) Begin() (common.TxController, error) {
+func (t *SqlTxBeginner) Begin() (port.TxController, error) {
 	return t.db.Begin()
 }
 
-// Begin starts transaction returning common.TxController that commits or rollbacks
-func (t *SqlTxBeginner) BeginR() (common.TxController, error) {
+// Begin starts transaction returning port.TxController that commits or rollbacks
+func (t *SqlTxBeginner) BeginR() (port.TxController, error) {
 	return t.Begin()
 }
 
@@ -28,7 +28,7 @@ type NopTxBeginner struct{}
 func NewNopTxBeginner() *NopTxBeginner {
 	return &NopTxBeginner{}
 }
-func (o *NopTxBeginner) Begin() (common.TxController, error) {
+func (o *NopTxBeginner) Begin() (port.TxController, error) {
 	return NewNopTxController(), nil
 }
 

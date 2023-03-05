@@ -3,7 +3,7 @@ package txcom
 import (
 	"sync"
 
-	"github.com/w-woong/common"
+	"github.com/w-woong/common/port"
 )
 
 type LockTxBeginner struct {
@@ -16,12 +16,12 @@ func NewLockTxBeginner() *LockTxBeginner {
 	}
 }
 
-func (a *LockTxBeginner) Begin() (common.TxController, error) {
+func (a *LockTxBeginner) Begin() (port.TxController, error) {
 	a.l.Lock()
 	return NewLockTxController(a.l), nil
 }
 
-func (a *LockTxBeginner) BeginR() (common.TxController, error) {
+func (a *LockTxBeginner) BeginR() (port.TxController, error) {
 	a.l.RLock()
 	return NewRLockTxController(a.l), nil
 }
