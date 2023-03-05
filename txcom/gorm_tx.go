@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/w-woong/common"
+	"github.com/w-woong/common/dto"
 	"gorm.io/gorm"
 )
 
@@ -58,7 +59,7 @@ func (a *GormTxController) Rollback() error {
 // ConvertErr converts gorm package's errors to internal ones
 func ConvertErr(err error) error {
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return common.ErrRecordNotFound
+		return dto.ErrRecordNotFound
 	}
 
 	return err

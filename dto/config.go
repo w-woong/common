@@ -1,4 +1,4 @@
-package common
+package dto
 
 import (
 	"crypto/tls"
@@ -6,8 +6,6 @@ import (
 	"net"
 	"net/http"
 	"time"
-
-	"github.com/w-woong/common/dto"
 )
 
 type Config struct {
@@ -66,8 +64,8 @@ type ConfigGrpc struct {
 }
 
 type SecurityConfig struct {
-	Jwks                JwksConfig     `mapstructure:"jwks"`
-	OpenIDConfiguration dto.OpenIDConf `mapstructure:"openid_configuration"`
+	Jwks                JwksConfig `mapstructure:"jwks"`
+	OpenIDConfiguration OpenIDConf `mapstructure:"openid_configuration"`
 }
 
 type ConfigEnforcementPolicy struct {
@@ -102,8 +100,8 @@ type ConfigFile struct {
 
 type ConfigClient struct {
 	// Oauth2 ConfigOauth2            `mapstructure:"oauth2"`
-	IDTokenCookie CookieConfig            `mapstructure:"id_token_cookie"`
-	Cookies       map[string]CookieConfig `mapstructure:"cookies"`
+	// IDTokenCookie CookieConfig            `mapstructure:"id_token_cookie"`
+	Cookies map[string]CookieConfig `mapstructure:"cookies"`
 
 	OAuth2 map[string]OAuth2Config `mapstructure:"oauth2"`
 	Http   ConfigHttpClient        `mapstructure:"http"`
@@ -203,7 +201,7 @@ type OAuth2Config struct {
 	AuthRequest         ConfigAuthRequest         `mapstructure:"authrequest"`
 	RegisterUser        bool                      `mapstructure:"register_user"`
 
-	OpenIDConfiguration dto.OpenIDConf `mapstructure:"openid_configuration"`
+	OpenIDConfiguration OpenIDConf `mapstructure:"openid_configuration"`
 
 	HttpClient         ConfigHttpClient `mapstructure:"http_client"`
 	UserAuthHttpClient ConfigHttpClient `mapstructure:"user_auth_http_client"`

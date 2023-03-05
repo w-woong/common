@@ -12,7 +12,7 @@ import (
 	"github.com/go-wonk/si/v2"
 	"github.com/go-wonk/si/v2/sicore"
 	"github.com/go-wonk/si/v2/sihttp"
-	"github.com/w-woong/common"
+	"github.com/w-woong/common/dto"
 	"github.com/w-woong/common/logger"
 	"github.com/w-woong/common/utils"
 )
@@ -33,7 +33,7 @@ func AuthHMACHandler(next http.HandlerFunc, hmacHeader string, hmacKey []byte) h
 		if r.Body != nil {
 			reqBytes, err = si.ReadAll(r.Body)
 			if err != nil {
-				common.HttpError(w, http.StatusBadRequest)
+				dto.HttpError(w, http.StatusBadRequest)
 				logger.Error(http.StatusText(http.StatusBadRequest), logger.UrlField(r.URL.String()))
 				return
 			}
@@ -48,13 +48,13 @@ func AuthHMACHandler(next http.HandlerFunc, hmacHeader string, hmacKey []byte) h
 
 		hmacHexStr, err := sicore.HmacSha256HexEncoded(string(hmacKey), msg)
 		if err != nil {
-			common.HttpError(w, http.StatusInternalServerError)
+			dto.HttpError(w, http.StatusInternalServerError)
 			logger.Error(http.StatusText(http.StatusInternalServerError), logger.UrlField(r.URL.String()))
 			return
 		}
 
 		if hmacHexStr != r.Header.Get(hmacHeader) {
-			common.HttpError(w, http.StatusUnauthorized)
+			dto.HttpError(w, http.StatusUnauthorized)
 			logger.Warn(fmt.Sprintf("generated hmac value %v is invalid(expected: %v)", r.Header.Get(hmacHeader), hmacHexStr),
 				logger.UrlField(r.URL.String()), logger.ReqBodyField(reqBytes))
 			return
@@ -68,14 +68,14 @@ func AuthBearerHandler(next http.HandlerFunc, bearerKey string) http.HandlerFunc
 	return func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
 		if authHeader == "" {
-			common.HttpError(w, http.StatusUnauthorized)
+			dto.HttpError(w, http.StatusUnauthorized)
 			logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
 			return
 		}
 
 		authVal := strings.Split(authHeader, " ")
 		if len(authVal) != 2 {
-			common.HttpError(w, http.StatusUnauthorized)
+			dto.HttpError(w, http.StatusUnauthorized)
 			logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
 			return
 		}
@@ -120,13 +120,13 @@ func handleJWTAuth(w http.ResponseWriter, r *http.Request, secretKey string) err
 
 	authHeader := r.Header.Get("Authorization")
 	if authHeader == "" {
-		common.HttpError(w, http.StatusUnauthorized)
+		dto.HttpError(w, http.StatusUnauthorized)
 		logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
 		return errors.New("not authorized")
 	}
 	authHeaderSplit := strings.Split(authHeader, " ")
 	if len(authHeaderSplit) != 2 {
-		common.HttpError(w, http.StatusUnauthorized)
+		dto.HttpError(w, http.StatusUnauthorized)
 		logger.Error(http.StatusText(http.StatusUnauthorized), logger.UrlField(r.URL.String()))
 		return errors.New("not authorized")
 	}

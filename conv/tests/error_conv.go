@@ -7,8 +7,8 @@ import (
 
 	"github.com/go-wonk/si/v2/sihttp"
 	"github.com/stretchr/testify/assert"
-	"github.com/w-woong/common"
 	"github.com/w-woong/common/conv"
+	"github.com/w-woong/common/dto"
 	"golang.org/x/oauth2"
 )
 
@@ -17,8 +17,8 @@ func Test_InvalidRequestError_sihttpError(t *testing.T) {
 	err := conv.OAuth2ErrorInvalidRequest(errors.New("test error"))
 
 	statusCode := http.StatusUnauthorized
-	expected := &common.OAuth2Error{
-		ErrorType:        common.InvalidRequestErrorType,
+	expected := &dto.OAuth2Error{
+		ErrorType:        dto.InvalidRequestErrorType,
 		ErrorDescription: "test error",
 		StatusCode:       &statusCode,
 	}
@@ -32,8 +32,8 @@ func Test_InvalidRequestError_sihttpError(t *testing.T) {
 		Body: nil,
 	}
 	err = conv.OAuth2ErrorInvalidRequest(serr)
-	expected = &common.OAuth2Error{
-		ErrorType:        common.InvalidRequestErrorType,
+	expected = &dto.OAuth2Error{
+		ErrorType:        dto.InvalidRequestErrorType,
 		ErrorDescription: "status: " + http.StatusText(statusCode),
 		StatusCode:       &statusCode,
 	}
@@ -47,8 +47,8 @@ func Test_InvalidRequestError_sihttpError(t *testing.T) {
 		Body: []byte("error"),
 	}
 	err = conv.OAuth2ErrorInvalidRequest(serr)
-	expected = &common.OAuth2Error{
-		ErrorType:        common.InvalidRequestErrorType,
+	expected = &dto.OAuth2Error{
+		ErrorType:        dto.InvalidRequestErrorType,
 		ErrorDescription: "status: Unauthorized, body: error",
 		StatusCode:       &statusCode,
 	}
@@ -63,8 +63,8 @@ func Test_InvalidRequestError_sihttpError(t *testing.T) {
 	}
 	err = conv.OAuth2ErrorInvalidRequest(serr)
 	statusCode = 403
-	expected = &common.OAuth2Error{
-		ErrorType:        common.InvalidGrantErrorType,
+	expected = &dto.OAuth2Error{
+		ErrorType:        dto.InvalidGrantErrorType,
 		ErrorDescription: "missing scope",
 		StatusCode:       &statusCode,
 	}
@@ -76,8 +76,8 @@ func Test_InvalidRequestError_oauth2RetrieveError(t *testing.T) {
 	err := conv.OAuth2ErrorInvalidRequest(errors.New("test error"))
 
 	statusCode := http.StatusUnauthorized
-	expected := &common.OAuth2Error{
-		ErrorType:        common.InvalidRequestErrorType,
+	expected := &dto.OAuth2Error{
+		ErrorType:        dto.InvalidRequestErrorType,
 		ErrorDescription: "test error",
 		StatusCode:       &statusCode,
 	}
@@ -91,8 +91,8 @@ func Test_InvalidRequestError_oauth2RetrieveError(t *testing.T) {
 		Body: nil,
 	}
 	err = conv.OAuth2ErrorInvalidRequest(serr)
-	expected = &common.OAuth2Error{
-		ErrorType:        common.InvalidRequestErrorType,
+	expected = &dto.OAuth2Error{
+		ErrorType:        dto.InvalidRequestErrorType,
 		ErrorDescription: "oauth2: cannot fetch token: Unauthorized\nResponse: ",
 		StatusCode:       &statusCode,
 	}
@@ -106,8 +106,8 @@ func Test_InvalidRequestError_oauth2RetrieveError(t *testing.T) {
 		Body: []byte("error"),
 	}
 	err = conv.OAuth2ErrorInvalidRequest(serr)
-	expected = &common.OAuth2Error{
-		ErrorType:        common.InvalidRequestErrorType,
+	expected = &dto.OAuth2Error{
+		ErrorType:        dto.InvalidRequestErrorType,
 		ErrorDescription: "oauth2: cannot fetch token: Unauthorized\nResponse: error",
 		StatusCode:       &statusCode,
 	}
@@ -122,8 +122,8 @@ func Test_InvalidRequestError_oauth2RetrieveError(t *testing.T) {
 	}
 	err = conv.OAuth2ErrorInvalidRequest(serr)
 	statusCode = 403
-	expected = &common.OAuth2Error{
-		ErrorType:        common.InvalidGrantErrorType,
+	expected = &dto.OAuth2Error{
+		ErrorType:        dto.InvalidGrantErrorType,
 		ErrorDescription: "missing scope",
 		StatusCode:       &statusCode,
 	}

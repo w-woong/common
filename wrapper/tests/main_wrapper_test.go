@@ -12,7 +12,7 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/w-woong/common"
+	"github.com/w-woong/common/dto"
 	"github.com/w-woong/common/wrapper"
 	pb "github.com/w-woong/common/wrapper/tests/protos"
 	"google.golang.org/grpc"
@@ -32,15 +32,15 @@ var (
 
 func setup() error {
 	var err error
-	grpcConf := common.ConfigGrpc{
+	grpcConf := dto.ConfigGrpc{
 		Timeout:     15,
 		HealthCheck: false,
-		EnforcementPolicy: common.ConfigEnforcementPolicy{
+		EnforcementPolicy: dto.ConfigEnforcementPolicy{
 			Use:                 true,
 			MinTime:             15,
 			PermitWithoutStream: true,
 		},
-		KeepAlive: common.ConfigKeepAlive{
+		KeepAlive: dto.ConfigKeepAlive{
 			MaxConnIdle:         300,
 			MaxConnAge:          300,
 			MaxConnAgeGrace:     6,
@@ -62,9 +62,9 @@ func setup() error {
 		grpcSvr.Serve(lis)
 	}()
 
-	grpcClientConf := common.ConfigGrpcClient{
+	grpcClientConf := dto.ConfigGrpcClient{
 		Addr: ":18080",
-		KeepAlive: common.ConfigKeepAlive{
+		KeepAlive: dto.ConfigKeepAlive{
 			Time:                60,
 			Timeout:             1,
 			PermitWithoutStream: true,

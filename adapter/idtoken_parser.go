@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/w-woong/common"
+	"github.com/w-woong/common/dto"
 	"github.com/w-woong/common/utils"
 )
 
@@ -58,7 +58,7 @@ func (u *jwksIDTokenParser) getJwksStore() (utils.JwksGetter, error) {
 
 func (u *jwksIDTokenParser) ParseWithClaims(idToken string, claims jwt.Claims) (*jwt.Token, error) {
 	if idToken == "" {
-		return nil, common.ErrIDTokenNotFound
+		return nil, dto.ErrIDTokenNotFound
 	}
 
 	store, err := u.getJwksStore()

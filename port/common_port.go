@@ -1,4 +1,4 @@
-package common
+package port
 
 type Starter interface {
 	Start() error
