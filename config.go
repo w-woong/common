@@ -150,6 +150,7 @@ type ConfigGrpcClient struct {
 	PermitWithoutStream  bool            `mapstructure:"permit_without_stream"`
 	ResolverScheme       string          `mapstructure:"resolver_scheme"`
 	ResolverServiceName  string          `mapstructure:"resolver_service_name"`
+	DialTimeout          int             `mapstructure:"dial_timeout"`
 }
 type ConfigHttpClient struct {
 	Url         string `mapstructure:"url"`
