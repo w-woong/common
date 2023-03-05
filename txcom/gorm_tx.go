@@ -3,8 +3,8 @@ package txcom
 import (
 	"errors"
 
-	"github.com/w-woong/common"
 	"github.com/w-woong/common/dto"
+	"github.com/w-woong/common/port"
 	"gorm.io/gorm"
 )
 
@@ -20,8 +20,8 @@ func NewGormTxBeginner(db *gorm.DB) *GormTxBeginner {
 	}
 }
 
-// Begin starts transaction returning common.TxController that commits or rollbacks
-func (a *GormTxBeginner) Begin() (common.TxController, error) {
+// Begin starts transaction returning port.TxController that commits or rollbacks
+func (a *GormTxBeginner) Begin() (port.TxController, error) {
 	tx := a.db.Begin()
 	if tx.Error != nil {
 		return nil, tx.Error
@@ -29,8 +29,8 @@ func (a *GormTxBeginner) Begin() (common.TxController, error) {
 	return NewGormTxController(tx), nil
 }
 
-// Begin starts transaction returning common.TxController that commits or rollbacks
-func (a *GormTxBeginner) BeginR() (common.TxController, error) {
+// Begin starts transaction returning port.TxController that commits or rollbacks
+func (a *GormTxBeginner) BeginR() (port.TxController, error) {
 	return a.Begin()
 }
 
