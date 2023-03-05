@@ -7,11 +7,12 @@ import (
 	"time"
 
 	"github.com/w-woong/common/logger"
+	"github.com/w-woong/common/port"
 )
 
 // StartSignalStopper starts and wait for signals.
 // Once received a signal, that included in input signals, then calls stop method of stopper.
-func StartSignalStopper(stopper Stopper, signals ...os.Signal) {
+func StartSignalStopper(stopper port.Stopper, signals ...os.Signal) {
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, signals...)
 	go func() {

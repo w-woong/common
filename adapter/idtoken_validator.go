@@ -5,7 +5,6 @@ import (
 
 	"github.com/MicahParks/keyfunc"
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/w-woong/common"
 	"github.com/w-woong/common/dto"
 	"github.com/w-woong/common/utils"
 )
@@ -40,7 +39,7 @@ func (u *jwksIDTokenValidator) IDTokenKey() string {
 
 func (u *jwksIDTokenValidator) Validate(idToken string) (*jwt.Token, *dto.IDTokenClaims, error) {
 	if idToken == "" {
-		return nil, nil, common.ErrIDTokenNotFound
+		return nil, nil, dto.ErrIDTokenNotFound
 	}
 
 	jwksJson, err := u.jwksStore.Get()
@@ -60,28 +59,28 @@ func (u *jwksIDTokenValidator) Validate(idToken string) (*jwt.Token, *dto.IDToke
 	if token.Valid {
 		claims, ok := token.Claims.(*dto.IDTokenClaims)
 		if !ok {
-			return nil, nil, common.ErrUnexpectedTokenClaims
+			return nil, nil, dto.ErrUnexpectedTokenClaims
 		}
 		return token, claims, err
 	} else if errors.Is(err, jwt.ErrTokenMalformed) {
-		return nil, nil, common.ErrTokenMalformed
+		return nil, nil, dto.ErrTokenMalformed
 	} else if errors.Is(err, jwt.ErrTokenExpired) {
 		claims, ok := token.Claims.(*dto.IDTokenClaims)
 		if !ok {
-			return nil, nil, common.ErrTokenExpired
+			return nil, nil, dto.ErrTokenExpired
 		}
-		return token, claims, common.ErrTokenExpired
+		return token, claims, dto.ErrTokenExpired
 	} else if errors.Is(err, jwt.ErrTokenNotValidYet) {
 		// return nil, auth.ErrTokenNotValidYet
 		claims, ok := token.Claims.(*dto.IDTokenClaims)
 		if !ok {
-			return nil, nil, common.ErrUnexpectedTokenClaims
+			return nil, nil, dto.ErrUnexpectedTokenClaims
 		}
 		return token, claims, nil
 	} else if errors.Is(err, jwt.ErrTokenUsedBeforeIssued) {
 		claims, ok := token.Claims.(*dto.IDTokenClaims)
 		if !ok {
-			return nil, nil, common.ErrUnexpectedTokenClaims
+			return nil, nil, dto.ErrUnexpectedTokenClaims
 		}
 		return token, claims, nil
 	}

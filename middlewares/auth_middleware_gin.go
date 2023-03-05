@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/w-woong/common"
 	"github.com/w-woong/common/dto"
 	"github.com/w-woong/common/logger"
 	"github.com/w-woong/common/port"
@@ -41,8 +40,8 @@ func GetIDTokenJwtAndClaimsGin(cookie port.Cookie, parser port.IDTokenParser) gi
 
 		jwtToken, err := parser.ParseWithClaims(idToken, &dto.IDTokenClaims{})
 		if err != nil {
-			if !errors.Is(err, common.ErrTokenExpired) {
-				oerr := common.OAuth2ErrorInvalidRequest(err.Error(), http.StatusUnauthorized)
+			if !errors.Is(err, dto.ErrTokenExpired) {
+				oerr := dto.OAuth2ErrorInvalidRequest(err.Error(), http.StatusUnauthorized)
 				http.Error(w, oerr.Error(), oerr.GetStatusCode())
 				logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 				c.Abort()
@@ -52,7 +51,7 @@ func GetIDTokenJwtAndClaimsGin(cookie port.Cookie, parser port.IDTokenParser) gi
 
 		claims, ok := jwtToken.Claims.(*dto.IDTokenClaims)
 		if !ok {
-			oerr := common.OAuth2ErrorInvalidClaims()
+			oerr := dto.OAuth2ErrorInvalidClaims()
 			http.Error(w, oerr.Error(), oerr.GetStatusCode())
 			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 			c.Abort()
@@ -77,8 +76,8 @@ func AuthIDTokenGin(cookie port.Cookie, parser port.IDTokenParser) gin.HandlerFu
 		}
 		jwtToken, err := parser.ParseWithClaims(idToken, &dto.IDTokenClaims{})
 		if err != nil {
-			if errors.Is(err, common.ErrTokenExpired) {
-				oerr := common.OAuth2ErrorTryRefresh(err.Error())
+			if errors.Is(err, dto.ErrTokenExpired) {
+				oerr := dto.OAuth2ErrorTryRefresh(err.Error())
 				http.Error(w, oerr.Error(), oerr.GetStatusCode())
 				logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 				c.Abort()
@@ -89,7 +88,7 @@ func AuthIDTokenGin(cookie port.Cookie, parser port.IDTokenParser) gin.HandlerFu
 				return
 			}
 
-			oerr := common.OAuth2ErrorInvalidRequest(err.Error(), http.StatusUnauthorized)
+			oerr := dto.OAuth2ErrorInvalidRequest(err.Error(), http.StatusUnauthorized)
 			http.Error(w, oerr.Error(), oerr.GetStatusCode())
 			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 			c.Abort()
@@ -98,7 +97,7 @@ func AuthIDTokenGin(cookie port.Cookie, parser port.IDTokenParser) gin.HandlerFu
 
 		claims, ok := jwtToken.Claims.(*dto.IDTokenClaims)
 		if !ok {
-			oerr := common.OAuth2ErrorInvalidClaims()
+			oerr := dto.OAuth2ErrorInvalidClaims()
 			http.Error(w, oerr.Error(), oerr.GetStatusCode())
 			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 			c.Abort()
@@ -153,14 +152,14 @@ func AuthIDTokenUserAccountSvcGin(cookie port.Cookie, parser port.IDTokenParser,
 		}
 		jwtToken, err := parser.ParseWithClaims(idToken, &dto.IDTokenClaims{})
 		if err != nil {
-			if errors.Is(err, common.ErrTokenExpired) {
-				oerr := common.OAuth2ErrorTryRefresh(err.Error())
+			if errors.Is(err, dto.ErrTokenExpired) {
+				oerr := dto.OAuth2ErrorTryRefresh(err.Error())
 				http.Error(w, oerr.Error(), oerr.GetStatusCode())
 				logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 				c.Abort()
 				return
 			}
-			oerr := common.OAuth2ErrorInvalidRequest(err.Error(), http.StatusUnauthorized)
+			oerr := dto.OAuth2ErrorInvalidRequest(err.Error(), http.StatusUnauthorized)
 			http.Error(w, oerr.Error(), oerr.GetStatusCode())
 			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 			c.Abort()
@@ -169,7 +168,7 @@ func AuthIDTokenUserAccountSvcGin(cookie port.Cookie, parser port.IDTokenParser,
 
 		claims, ok := jwtToken.Claims.(*dto.IDTokenClaims)
 		if !ok {
-			oerr := common.OAuth2ErrorInvalidClaims()
+			oerr := dto.OAuth2ErrorInvalidClaims()
 			http.Error(w, oerr.Error(), oerr.GetStatusCode())
 			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 			c.Abort()
@@ -178,7 +177,7 @@ func AuthIDTokenUserAccountSvcGin(cookie port.Cookie, parser port.IDTokenParser,
 
 		userAccount, err := userSvc.FindByIDToken(c, idToken)
 		if err != nil {
-			oerr := common.OAuth2ErrorInvalidRequest(err.Error(), http.StatusUnauthorized)
+			oerr := dto.OAuth2ErrorInvalidRequest(err.Error(), http.StatusUnauthorized)
 			http.Error(w, oerr.Error(), oerr.GetStatusCode())
 			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 			c.Abort()

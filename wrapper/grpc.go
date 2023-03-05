@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/w-woong/common"
+	"github.com/w-woong/common/dto"
 	"go.elastic.co/apm/module/apmgrpc/v2"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -42,7 +42,7 @@ func (s *GrpcServer) Stop() error {
 // NewGrpcServer
 // pb.RegisterEventServer(svr, eventGrpcServer)
 //
-func NewGrpcServer(conf common.ConfigGrpc, certPem, certKey string, apmActive bool, opt ...grpc.ServerOption) (*grpc.Server, error) {
+func NewGrpcServer(conf dto.ConfigGrpc, certPem, certKey string, apmActive bool, opt ...grpc.ServerOption) (*grpc.Server, error) {
 
 	opts := []grpc.ServerOption{}
 	if certPem != "" && certKey != "" {
@@ -84,7 +84,7 @@ func NewGrpcServer(conf common.ConfigGrpc, certPem, certKey string, apmActive bo
 // NewGrpcClient
 // defer conn.Close()
 // TODO: Dial timeout
-func NewGrpcClient(conf common.ConfigGrpcClient, apmActive bool) (*grpc.ClientConn, error) {
+func NewGrpcClient(conf dto.ConfigGrpcClient, apmActive bool) (*grpc.ClientConn, error) {
 
 	resolver.Register(&grpcResolverBuilder{
 		scheme:      conf.ResolverScheme,
@@ -122,8 +122,8 @@ func NewGrpcClient(conf common.ConfigGrpcClient, apmActive bool) (*grpc.ClientCo
 	} else {
 		dialTimeout = time.Duration(conf.DialTimeout) * time.Second
 	}
-	ctx, _ := context.WithTimeout(context.Background(), dialTimeout)
-
+	ctx, cancel := context.WithTimeout(context.Background(), dialTimeout)
+	defer cancel()
 	conn, err := grpc.DialContext(ctx, fmt.Sprintf("%s:///%s", conf.ResolverScheme, conf.ResolverServiceName),
 		opts...)
 	if err != nil {

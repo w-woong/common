@@ -9,7 +9,6 @@ import (
 
 	"github.com/go-wonk/si/v2/sicore"
 	"github.com/go-wonk/si/v2/sihttp"
-	"github.com/w-woong/common"
 	"github.com/w-woong/common/dto"
 	"github.com/w-woong/common/port"
 )
@@ -44,13 +43,13 @@ func NewUserHttp(client *http.Client, baseUrl string) *userHttp {
 
 func (a *userHttp) RegisterUser(ctx context.Context, user dto.User) (dto.User, error) {
 
-	req := common.HttpBody{
+	req := dto.HttpBody{
 		Count:    1,
 		Document: &user,
 	}
 
 	resUser := dto.User{}
-	res := common.HttpBody{
+	res := dto.HttpBody{
 		Document: &resUser,
 	}
 	err := a.client.PostDecodeContext(ctx, "/v1/user", nil, &req, &res)
@@ -68,7 +67,7 @@ func (a *userHttp) RegisterUser(ctx context.Context, user dto.User) (dto.User, e
 func (a *userHttp) FindByIDToken(ctx context.Context, idToken string) (dto.User, error) {
 
 	resUser := dto.User{}
-	res := common.HttpBody{
+	res := dto.HttpBody{
 		Document: &resUser,
 	}
 	header := make(http.Header)
@@ -77,13 +76,13 @@ func (a *userHttp) FindByIDToken(ctx context.Context, idToken string) (dto.User,
 	if err != nil {
 		if se, ok := err.(*sihttp.Error); ok {
 			val := false
-			oerr := common.OAuth2Error{
+			oerr := dto.OAuth2Error{
 				TryRefresh: &val,
 			}
 			json.Unmarshal(se.Body, &oerr)
 
 			if *oerr.TryRefresh {
-				return dto.NilUser, common.ErrTokenExpired
+				return dto.NilUser, dto.ErrTokenExpired
 			}
 		}
 		return dto.NilUser, err

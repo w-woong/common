@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/w-woong/common"
 	"github.com/w-woong/common/configs"
+	"github.com/w-woong/common/dto"
 )
 
 type MyConfig struct {
@@ -47,7 +47,7 @@ func TestReadConfigInto(t *testing.T) {
 }
 
 func TestConfig(t *testing.T) {
-	conf := common.Config{}
+	conf := dto.Config{}
 	err := configs.ReadConfigInto("./tests/config.yml", &conf)
 	assert.Nil(t, err)
 	fmt.Println(conf.String())

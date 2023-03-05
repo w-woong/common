@@ -5,25 +5,25 @@ import (
 	"net/http"
 
 	"github.com/go-wonk/si/v2/sihttp"
-	"github.com/w-woong/common"
+	"github.com/w-woong/common/dto"
 	"golang.org/x/oauth2"
 )
 
-func OAuth2ErrorInvalidRequest(err error) *common.OAuth2Error {
-	return OAuth2Error(err, common.InvalidRequestErrorType, http.StatusUnauthorized)
+func OAuth2ErrorInvalidRequest(err error) *dto.OAuth2Error {
+	return OAuth2Error(err, dto.InvalidRequestErrorType, http.StatusUnauthorized)
 }
 
-func OAuth2Error(err error, defaultError common.OAuth2ErrorType, defaultStatusCode int) *common.OAuth2Error {
+func OAuth2Error(err error, defaultError dto.OAuth2ErrorType, defaultStatusCode int) *dto.OAuth2Error {
 	if err == nil {
 		return nil
 	}
 
 	switch t := err.(type) {
-	case *common.OAuth2Error:
+	case *dto.OAuth2Error:
 		return t
 	case *sihttp.Error:
 		statusCode := t.GetStatusCode(defaultStatusCode)
-		oerr := common.OAuth2Error{
+		oerr := dto.OAuth2Error{
 			ErrorType:        defaultError,
 			ErrorDescription: t.Error(),
 			StatusCode:       &statusCode,
@@ -35,7 +35,7 @@ func OAuth2Error(err error, defaultError common.OAuth2ErrorType, defaultStatusCo
 		return &oerr
 	case *oauth2.RetrieveError:
 		statusCode := t.Response.StatusCode
-		oerr := common.OAuth2Error{
+		oerr := dto.OAuth2Error{
 			ErrorType:        defaultError,
 			ErrorDescription: err.Error(),
 			StatusCode:       &statusCode,
@@ -44,17 +44,17 @@ func OAuth2Error(err error, defaultError common.OAuth2ErrorType, defaultStatusCo
 		return &oerr
 	}
 
-	return common.NewOAuth2Error(defaultError, err.Error(), defaultStatusCode)
+	return dto.NewOAuth2Error(defaultError, err.Error(), defaultStatusCode)
 }
 
-func OAuth2ErrorTryReauthenticate(err error) *common.OAuth2Error {
-	oerr := OAuth2Error(err, common.InvalidRequestErrorType, http.StatusUnauthorized)
+func OAuth2ErrorTryReauthenticate(err error) *dto.OAuth2Error {
+	oerr := OAuth2Error(err, dto.InvalidRequestErrorType, http.StatusUnauthorized)
 	oerr.SetTryReauthenticate(true)
 	return oerr
 }
 
-func OAuth2ErrorTryRefresh(err error) *common.OAuth2Error {
-	oerr := OAuth2Error(err, common.InvalidRequestErrorType, http.StatusUnauthorized)
+func OAuth2ErrorTryRefresh(err error) *dto.OAuth2Error {
+	oerr := OAuth2Error(err, dto.InvalidRequestErrorType, http.StatusUnauthorized)
 	oerr.SetTryRefresh(true)
 	return oerr
 }

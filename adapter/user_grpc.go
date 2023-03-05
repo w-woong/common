@@ -5,7 +5,6 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/w-woong/common"
 	"github.com/w-woong/common/conv"
 	"github.com/w-woong/common/dto"
 	pb "github.com/w-woong/common/dto/protos/user/v2"
@@ -39,8 +38,8 @@ func (a *userGrpc) RegisterUser(ctx context.Context, user dto.User) (dto.User, e
 	})
 	if err != nil {
 		if s, ok := status.FromError(err); ok {
-			if common.StatusTryRefreshIDToken == int(s.Code()) {
-				return dto.NilUser, common.ErrTokenExpired
+			if dto.StatusTryRefreshIDToken == int(s.Code()) {
+				return dto.NilUser, dto.ErrTokenExpired
 			}
 		}
 		return dto.NilUser, err
@@ -59,8 +58,8 @@ func (a *userGrpc) FindByIDToken(ctx context.Context, idToken string) (dto.User,
 	})
 	if err != nil {
 		if s, ok := status.FromError(err); ok {
-			if common.StatusTryRefreshIDToken == int(s.Code()) {
-				return dto.NilUser, common.ErrTokenExpired
+			if dto.StatusTryRefreshIDToken == int(s.Code()) {
+				return dto.NilUser, dto.ErrTokenExpired
 			}
 		}
 		return dto.NilUser, err

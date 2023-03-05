@@ -5,7 +5,6 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/w-woong/common"
 	"github.com/w-woong/common/dto"
 	"github.com/w-woong/common/logger"
 	"github.com/w-woong/common/port"
@@ -47,8 +46,8 @@ func GetIDTokenJwtAndClaims(next http.HandlerFunc, cookie port.Cookie, parser po
 
 		jwtToken, err := parser.ParseWithClaims(idToken, &dto.IDTokenClaims{})
 		if err != nil {
-			if !errors.Is(err, common.ErrTokenExpired) {
-				oerr := common.OAuth2ErrorInvalidRequest(err.Error(), http.StatusUnauthorized)
+			if !errors.Is(err, dto.ErrTokenExpired) {
+				oerr := dto.OAuth2ErrorInvalidRequest(err.Error(), http.StatusUnauthorized)
 				http.Error(w, oerr.Error(), oerr.GetStatusCode())
 				logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 				return
@@ -57,7 +56,7 @@ func GetIDTokenJwtAndClaims(next http.HandlerFunc, cookie port.Cookie, parser po
 
 		claims, ok := jwtToken.Claims.(*dto.IDTokenClaims)
 		if !ok {
-			oerr := common.OAuth2ErrorInvalidClaims()
+			oerr := dto.OAuth2ErrorInvalidClaims()
 			http.Error(w, oerr.Error(), oerr.GetStatusCode())
 			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 			return
@@ -81,8 +80,8 @@ func AuthIDToken(next http.HandlerFunc, cookie port.Cookie, parser port.IDTokenP
 		}
 		jwtToken, err := parser.ParseWithClaims(idToken, &dto.IDTokenClaims{})
 		if err != nil {
-			if errors.Is(err, common.ErrTokenExpired) {
-				oerr := common.OAuth2ErrorTryRefresh(err.Error())
+			if errors.Is(err, dto.ErrTokenExpired) {
+				oerr := dto.OAuth2ErrorTryRefresh(err.Error())
 				http.Error(w, oerr.Error(), oerr.GetStatusCode())
 				logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 
@@ -92,7 +91,7 @@ func AuthIDToken(next http.HandlerFunc, cookie port.Cookie, parser port.IDTokenP
 				return
 			}
 
-			oerr := common.OAuth2ErrorInvalidRequest(err.Error(), http.StatusUnauthorized)
+			oerr := dto.OAuth2ErrorInvalidRequest(err.Error(), http.StatusUnauthorized)
 			http.Error(w, oerr.Error(), oerr.GetStatusCode())
 			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 			return
@@ -100,7 +99,7 @@ func AuthIDToken(next http.HandlerFunc, cookie port.Cookie, parser port.IDTokenP
 
 		claims, ok := jwtToken.Claims.(*dto.IDTokenClaims)
 		if !ok {
-			oerr := common.OAuth2ErrorInvalidClaims()
+			oerr := dto.OAuth2ErrorInvalidClaims()
 			http.Error(w, oerr.Error(), oerr.GetStatusCode())
 			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 			return
@@ -150,14 +149,14 @@ func AuthIDTokenUserAccountSvc(next http.HandlerFunc, cookie port.Cookie, parser
 		}
 		jwtToken, err := parser.ParseWithClaims(idToken, &dto.IDTokenClaims{})
 		if err != nil {
-			if errors.Is(err, common.ErrTokenExpired) {
-				oerr := common.OAuth2ErrorTryRefresh(err.Error())
+			if errors.Is(err, dto.ErrTokenExpired) {
+				oerr := dto.OAuth2ErrorTryRefresh(err.Error())
 				http.Error(w, oerr.Error(), oerr.GetStatusCode())
 				logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 
 				return
 			}
-			oerr := common.OAuth2ErrorInvalidRequest(err.Error(), http.StatusUnauthorized)
+			oerr := dto.OAuth2ErrorInvalidRequest(err.Error(), http.StatusUnauthorized)
 			http.Error(w, oerr.Error(), oerr.GetStatusCode())
 			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 			return
@@ -165,7 +164,7 @@ func AuthIDTokenUserAccountSvc(next http.HandlerFunc, cookie port.Cookie, parser
 
 		claims, ok := jwtToken.Claims.(*dto.IDTokenClaims)
 		if !ok {
-			oerr := common.OAuth2ErrorInvalidClaims()
+			oerr := dto.OAuth2ErrorInvalidClaims()
 			http.Error(w, oerr.Error(), oerr.GetStatusCode())
 			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 			return
@@ -173,7 +172,7 @@ func AuthIDTokenUserAccountSvc(next http.HandlerFunc, cookie port.Cookie, parser
 
 		userAccount, err := userSvc.FindByIDToken(ctx, idToken)
 		if err != nil {
-			oerr := common.OAuth2ErrorInvalidRequest(err.Error(), http.StatusUnauthorized)
+			oerr := dto.OAuth2ErrorInvalidRequest(err.Error(), http.StatusUnauthorized)
 			http.Error(w, oerr.Error(), oerr.GetStatusCode())
 			logger.Error(oerr.Error(), logger.UrlField(r.URL.String()))
 			return
@@ -201,19 +200,19 @@ func AuthIDTokenGrpc(parser port.IDTokenParser) grpc.UnaryServerInterceptor {
 
 			jwtToken, err := parser.ParseWithClaims(idToken, &dto.IDTokenClaims{})
 			if err != nil {
-				if errors.Is(err, common.ErrTokenExpired) {
-					return nil, status.Error(codes.Code(common.StatusTryRefreshIDToken), err.Error())
+				if errors.Is(err, dto.ErrTokenExpired) {
+					return nil, status.Error(codes.Code(dto.StatusTryRefreshIDToken), err.Error())
 				}
 				return nil, err
 			}
 			claims, ok := jwtToken.Claims.(*dto.IDTokenClaims)
 			if !ok {
-				return nil, status.Error(codes.Code(common.StatusInvalidTokenClaims), common.ErrTokenInvalidClaims.Error())
+				return nil, status.Error(codes.Code(dto.StatusInvalidTokenClaims), dto.ErrTokenInvalidClaims.Error())
 			}
 			ctx = context.WithValue(ctx, dto.IDTokenClaimsContextKey{}, *claims)
 			return handler(ctx, req)
 		default:
-			return nil, common.ErrIDTokenNotFound
+			return nil, dto.ErrIDTokenNotFound
 		}
 	}
 }
@@ -231,14 +230,14 @@ func AuthIDTokenUserAccountGrpc(parser port.IDTokenParser, userSvc port.UserSvc)
 
 			jwtToken, err := parser.ParseWithClaims(idToken, &dto.IDTokenClaims{})
 			if err != nil {
-				if errors.Is(err, common.ErrTokenExpired) {
-					return nil, status.Error(codes.Code(common.StatusTryRefreshIDToken), err.Error())
+				if errors.Is(err, dto.ErrTokenExpired) {
+					return nil, status.Error(codes.Code(dto.StatusTryRefreshIDToken), err.Error())
 				}
 				return nil, err
 			}
 			claims, ok := jwtToken.Claims.(*dto.IDTokenClaims)
 			if !ok {
-				return nil, status.Error(codes.Code(common.StatusInvalidTokenClaims), common.ErrTokenInvalidClaims.Error())
+				return nil, status.Error(codes.Code(dto.StatusInvalidTokenClaims), dto.ErrTokenInvalidClaims.Error())
 			}
 
 			userAccount, err := userSvc.FindByIDToken(ctx, idToken)
@@ -249,7 +248,7 @@ func AuthIDTokenUserAccountGrpc(parser port.IDTokenParser, userSvc port.UserSvc)
 			ctx = context.WithValue(ctx, dto.UserAccountContextKey{}, userAccount)
 			return handler(ctx, req)
 		default:
-			return nil, common.ErrIDTokenNotFound
+			return nil, dto.ErrIDTokenNotFound
 		}
 	}
 }

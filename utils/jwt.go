@@ -12,7 +12,7 @@ import (
 	"github.com/MicahParks/keyfunc"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/lestrrat-go/jwx/v2/jwk"
-	"github.com/w-woong/common"
+	"github.com/w-woong/common/dto"
 )
 
 func LoadRSAPrivateKey(fileName string) (*rsa.PrivateKey, error) {
@@ -107,9 +107,9 @@ func ParseJWTWithClaimsJwks(token string, claims jwt.Claims, jwksBytes []byte) (
 	if jwtToken.Valid {
 		return jwtToken, err
 	} else if errors.Is(err, jwt.ErrTokenMalformed) {
-		return nil, common.ErrTokenMalformed
+		return nil, dto.ErrTokenMalformed
 	} else if errors.Is(err, jwt.ErrTokenExpired) {
-		return jwtToken, common.ErrTokenExpired
+		return jwtToken, dto.ErrTokenExpired
 	} else if errors.Is(err, jwt.ErrTokenNotValidYet) {
 		return jwtToken, nil
 	} else if errors.Is(err, jwt.ErrTokenUsedBeforeIssued) {
