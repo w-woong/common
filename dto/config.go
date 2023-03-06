@@ -198,6 +198,7 @@ type OAuth2Config struct {
 	AuthUrl             string                    `mapstructure:"auth_url"`
 	TokenUrl            string                    `mapstructure:"token_url"`
 	OpenIDConfUrl       string                    `mapstructure:"openid_conf_url"`
+	PosLogoutCallback   string                    `mapstructure:"post_logout_callback"`
 	PosLogoutUrl        string                    `mapstructure:"post_logout_url"`
 	AuthRequest         ConfigAuthRequest         `mapstructure:"authrequest"` // TODO: should I deprecate it?
 	RegisterUser        bool                      `mapstructure:"register_user"`
