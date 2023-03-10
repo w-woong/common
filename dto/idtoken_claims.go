@@ -20,11 +20,15 @@ type UserAccountContextKey struct{}
 
 type IDTokenClaims struct {
 	jwt.RegisteredClaims
-	Azp           string `json:"azp"`
-	Email         string `json:"email"`
-	EmailVerified bool   `json:"email_verified"`
-	FamilyName    string `json:"family_name"`
-	GivenName     string `json:"given_name"`
-	Name          string `json:"name"`
-	TokenSource   string `json:"token_source"`
+	Azp           string `json:"azp,omitempty"`
+	Email         string `json:"email,omitempty"`
+	EmailVerified bool   `json:"email_verified,omitempty"`
+	FamilyName    string `json:"family_name,omitempty"`
+	GivenName     string `json:"given_name,omitempty"`
+	Name          string `json:"name,omitempty"`
+	TokenSource   string `json:"token_source,omitempty"`
+
+	UserID      *uint64 `json:"user_id,omitempty"`
+	PhoneNumber string  `json:"phone,omitempty"`
+	Gender      string  `json:"gender,omitempty"`
 }
