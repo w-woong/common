@@ -15,6 +15,7 @@ type Token struct {
 	TokenType    string `json:"token_type,omitempty"`
 	IDToken      string `json:"id_token,omitempty"`
 	Expiry       int64  `json:"expiry,omitempty"`
+	Subject      string `json:"sub,omitempty"`
 }
 
 func (d *Token) HideSensitive() *Token {
