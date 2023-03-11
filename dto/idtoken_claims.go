@@ -27,6 +27,7 @@ type IDTokenClaims struct {
 	GivenName     string `json:"given_name,omitempty"`
 	Name          string `json:"name,omitempty"`
 	TokenSource   string `json:"token_source,omitempty"`
+	SourceIssuer  string `json:"source_issuer,omitempty"`
 
 	UserID      *uint64 `json:"user_id,omitempty"`
 	PhoneNumber string  `json:"phone,omitempty"`
