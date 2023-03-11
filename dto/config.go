@@ -103,9 +103,10 @@ type ConfigClient struct {
 	// IDTokenCookie CookieConfig            `mapstructure:"id_token_cookie"`
 	Cookies map[string]CookieConfig `mapstructure:"cookies"`
 
-	OAuth2 map[string]OAuth2Config `mapstructure:"oauth2"`
-	Http   ConfigHttpClient        `mapstructure:"http"`
-	Grpc   ConfigGrpcClient        `mapstructure:"grpc"`
+	OAuth2             map[string]OAuth2Config `mapstructure:"oauth2"`
+	SkipConsentClients []string                `mapstructure:"skip_consent_clients"`
+	Http               ConfigHttpClient        `mapstructure:"http"`
+	Grpc               ConfigGrpcClient        `mapstructure:"grpc"`
 
 	UserHttp ConfigHttpClient `mapstructure:"user_http"`
 	UserGrpc ConfigGrpcClient `mapstructure:"user_grpc"`
