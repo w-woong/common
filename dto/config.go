@@ -14,6 +14,9 @@ type Config struct {
 	Logger ConfigLogger `mapstructure:"logger"`
 
 	Partner ConfigPartner `mapstructure:"partner"`
+
+	Resources ResourcesConfig `mapstructure:"resources"`
+	Urls      UrlsConfig      `mapstructure:"urls"`
 }
 
 func (c *Config) String() string {
@@ -290,4 +293,16 @@ type ConfigPartner struct {
 type ConfigAddress struct {
 	Type     string `mapstructure:"type"`
 	HtmlFile string `mapstructure:"html_file"`
+}
+
+type ResourcesConfig struct {
+	Html HtmlConfig `mapstructure:"html"`
+}
+type HtmlConfig struct {
+	Login   string `mapstructure:"login"`
+	Consent string `mapstructure:"consent"`
+}
+type UrlsConfig struct {
+	LoginRedirect   string `mapstructure:"login_redirect"`
+	ConsentRedirect string `mapstructure:"consent_redirect"`
 }
